@@ -169,7 +169,114 @@ func testMax() {
 
 // 计算公共祖先
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	result := hasPoint(root, p, q)
+	return result.commonNode
 
+}
+
+type ResultCommon struct {
+	count      int
+	commonNode *TreeNode
+}
+
+func hasPoint(root, p, q *TreeNode) ResultCommon {
+	if root == nil {
+		return ResultCommon{
+			count:      0,
+			commonNode: nil,
+		}
+	}
+
+	left := hasPoint(root.Left, p, q)
+	right := hasPoint(root.Right, p, q)
+
+	if left.count == 2 {
+		return left
+	}
+	if right.count == 2 {
+		return right
+	}
+	count := 0
+	if root.Val == p.Val || root.Val == q.Val {
+		count += 1
+	}
+	count += left.count + right.count
+
+	if count == 2 {
+		return ResultCommon{
+			count:      2,
+			commonNode: root,
+		}
+	} else if count == 1 {
+		return ResultCommon{
+			count:      1,
+			commonNode: nil,
+		}
+	} else {
+		return ResultCommon{
+			count:      0,
+			commonNode: nil,
+		}
+	}
+
+}
+
+// 公共祖先 优化版
+func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
+	// check
+	if root == nil {
+		return root
+	}
+	// 相等 直接返回root节点即可
+	if root == p || root == q {
+		return root
+	}
+	// Divide
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+
+	// Conquer
+	// 左右两边都不为空，则根节点为祖先
+	if left != nil && right != nil {
+		return root
+	}
+	if left != nil {
+		return left
+	}
+	if right != nil {
+		return right
+	}
+	return nil
+}
+
+//层序遍历
+func levelOrder(root *TreeNode) [][]int {
+	if root == nil {
+		return nil
+	}
+
+	levelData := make([]int, 0)
+	levelData = append(levelData, root.Val)
+
+	left := levelOrder(root.Left)
+	right := levelOrder(root.Right)
+
+}
+
+func doWork(root *TreeNode, container [][]int, depth int) [][]int {
+	if root == nil {
+		return nil
+	}
+	//depth 从 -1 开始
+	depth++
+	if len(container) >= depth+1 {
+		container[depth] = append(container[depth], root.Val)
+	}
+	levelData := make([]int, 0)
+	levelData = append(levelData, root.Val)
+
+	left := doWork(root.Left, container)
+	right := doWork(root.Right, container)
 }
 
 func main() {
