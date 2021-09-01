@@ -291,23 +291,6 @@ func levelOrder(root *TreeNode) [][]int {
 	return reverseCon
 }
 
-// func arrayToTreeNode(array []int) TreeNode {
-// 	root := TreeNode{
-// 		Val:   array[0],
-// 		Left:  nil,
-// 		Right: nil,
-// 	}
-
-// 	// 先算出来有多少层
-// 	// 每层再计算响应的数量
-
-// 	for i := 0; i < len(array); i++ {
-// 		if i == 0 {
-// 			return root
-// 		}
-// 	}
-// }
-
 //锯齿形遍历
 func zigzagLevelOrder(root *TreeNode) [][]int {
 	if root == nil {
@@ -464,6 +447,9 @@ func isValidBST2(root *TreeNode) bool {
 	}
 	return true
 }
+
+// 二叉搜索树中的插入操作
+// 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。
 
 func main() {
 
