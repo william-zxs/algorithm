@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func forDemo() {
 	for i := 0; i < 10; i++ {
@@ -265,7 +268,8 @@ func levelOrder(root *TreeNode) [][]int {
 		for i := 0; i < length; i++ {
 			fmt.Printf("===length===%d====i===%d \n", length, i)
 			// break
-			node := queue[i]
+			node := queue[0]
+			queue = queue[1:]
 			levelContainer = append(levelContainer, node.Val)
 			if node.Left != nil {
 				queue = append(queue, node.Left)
@@ -276,34 +280,192 @@ func levelOrder(root *TreeNode) [][]int {
 
 		}
 
-		queue = queue[length:]
+		// queue = queue[length:]
 		container = append(container, levelContainer)
 
 	}
-	return container
+	reverseCon := make([][]int, 0)
+	for i := len(container) - 1; i >= 0; i-- {
+		reverseCon = append(reverseCon, container[i])
+	}
+	return reverseCon
 }
 
-func arrayToTreeNode(array []int) TreeNode {
-	root := TreeNode{
-		Val:   array[0],
-		Left:  nil,
-		Right: nil,
+// func arrayToTreeNode(array []int) TreeNode {
+// 	root := TreeNode{
+// 		Val:   array[0],
+// 		Left:  nil,
+// 		Right: nil,
+// 	}
+
+// 	// 先算出来有多少层
+// 	// 每层再计算响应的数量
+
+// 	for i := 0; i < len(array); i++ {
+// 		if i == 0 {
+// 			return root
+// 		}
+// 	}
+// }
+
+//锯齿形遍历
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	if root == nil {
+		return [][]int{}
 	}
+	queue := make([]*TreeNode, 0)
+	queue = append(queue, root)
+	container := make([][]int, 0)
+	for len(queue) > 0 {
+		length := len(queue)
+		levelContainer := make([]int, 0)
 
-	// 先算出来有多少层
-	// 每层再计算响应的数量
+		for i := 0; i < length; i++ {
+			fmt.Printf("===length===%d====i===%d \n", length, i)
+			// break
+			node := queue[0]
+			queue = queue[1:]
+			levelContainer = append(levelContainer, node.Val)
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
 
-	for i := 0; i < len(array); i++ {
-		if i == 0 {
-			root
+		}
+
+		// queue = queue[length:]
+		container = append(container, levelContainer)
+
+	}
+	zigzagCon := make([][]int, 0)
+	for i := 0; i < len(container); i++ {
+		if i%2 == 0 {
+			zigzagCon = append(zigzagCon, container[i])
+		} else {
+			list := make([]int, 0)
+			for m := len(container[i]) - 1; m >= 0; m-- {
+				list = append(list, container[i][m])
+			}
+			zigzagCon = append(zigzagCon, list)
 		}
 	}
+	return zigzagCon
+}
+
+/**
+给定一个二叉树，判断其是否是一个有效的二叉搜索树。
+
+假设一个二叉搜索树具有如下特征：
+
+节点的左子树只包含小于当前节点的数。
+节点的右子树只包含大于当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+**/
+
+// 可以用分治法，也可以用中序遍历
+// 验证二叉搜索树
+type ValidBSTType struct {
+	maxVal     int
+	minVal     int
+	isValidBST bool
+}
+
+func isValidBST(root *TreeNode) bool {
+	res := doValidBST(root)
+	return res.isValidBST
+}
+
+func doValidBST(root *TreeNode) ValidBSTType {
+	if root == nil {
+		return ValidBSTType{
+			maxVal:     0,
+			minVal:     0,
+			isValidBST: true,
+		}
+	}
+
+	left := doValidBST(root.Left)
+	right := doValidBST(root.Right)
+	//校验历史数据 如果不是BST 直接返回
+	if !(left.isValidBST && right.isValidBST) {
+		return ValidBSTType{
+			maxVal:     0,
+			minVal:     0,
+			isValidBST: false,
+		}
+	}
+
+	maxVal := right.maxVal
+	minVal := left.minVal
+
+	// 判断当前节点是否是BST
+	if root.Left != nil {
+		if root.Val <= left.maxVal {
+			return ValidBSTType{
+				maxVal:     0,
+				minVal:     0,
+				isValidBST: false,
+			}
+		}
+	} else {
+		minVal = root.Val
+	}
+
+	if root.Right != nil {
+		if root.Val >= right.minVal {
+			return ValidBSTType{
+				maxVal:     0,
+				minVal:     0,
+				isValidBST: false,
+			}
+		}
+	} else {
+		maxVal = root.Val
+	}
+
+	return ValidBSTType{
+		maxVal:     maxVal,
+		minVal:     minVal,
+		isValidBST: true,
+	}
+}
+
+/**
+验证 是否是二叉查找树  BST
+
+中序遍历
+
+**/
+func isValidBST2(root *TreeNode) bool {
+	// 处理的顺序是节点加入的顺序决定的
+	// 中序遍历 找到循环的条件
+	list := make([]*TreeNode, 0)
+	// 判断条件
+	smaller := math.MinInt64
+	// 数据队列
+	for len(list) > 0 || root != nil {
+		// 中序遍历 从 最左节点开始
+		for root != nil {
+			list = append(list, root)
+			root = root.Left
+		}
+
+		root = list[len(list)-1]
+		list = list[:len(list)-1]
+
+		if root.Val <= smaller {
+			return false
+		}
+
+		smaller = root.Val
+		root = root.Right
+	}
+	return true
 }
 
 func main() {
-	// 可以为nil的情况
-	// num := -(1 << 31)
-	// fmt.Println("num==", num)
 
 	data2 := TreeNode{
 		Val:   1,
@@ -320,6 +482,6 @@ func main() {
 		Left:  &data2,
 		Right: &data3,
 	}
-	res := levelOrder(&data1)
+	res := isValidBST(&data1)
 	fmt.Println(res)
 }
