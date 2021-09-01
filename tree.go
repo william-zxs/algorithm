@@ -250,38 +250,76 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 }
 
 //层序遍历
+// 主要的思路就是通过队列一层一层的去处理
 func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
-		return nil
+		return [][]int{}
 	}
+	queue := make([]*TreeNode, 0)
+	queue = append(queue, root)
+	container := make([][]int, 0)
+	for len(queue) > 0 {
+		length := len(queue)
+		levelContainer := make([]int, 0)
 
-	levelData := make([]int, 0)
-	levelData = append(levelData, root.Val)
+		for i := 0; i < length; i++ {
+			fmt.Printf("===length===%d====i===%d \n", length, i)
+			// break
+			node := queue[i]
+			levelContainer = append(levelContainer, node.Val)
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
 
-	left := levelOrder(root.Left)
-	right := levelOrder(root.Right)
+		}
 
+		queue = queue[length:]
+		container = append(container, levelContainer)
+
+	}
+	return container
 }
 
-func doWork(root *TreeNode, container [][]int, depth int) [][]int {
-	if root == nil {
-		return nil
+func arrayToTreeNode(array []int) TreeNode {
+	root := TreeNode{
+		Val:   array[0],
+		Left:  nil,
+		Right: nil,
 	}
-	//depth 从 -1 开始
-	depth++
-	if len(container) >= depth+1 {
-		container[depth] = append(container[depth], root.Val)
-	}
-	levelData := make([]int, 0)
-	levelData = append(levelData, root.Val)
 
-	left := doWork(root.Left, container)
-	right := doWork(root.Right, container)
+	// 先算出来有多少层
+	// 每层再计算响应的数量
+
+	for i := 0; i < len(array); i++ {
+		if i == 0 {
+			root
+		}
+	}
 }
 
 func main() {
 	// 可以为nil的情况
 	// num := -(1 << 31)
 	// fmt.Println("num==", num)
-	testMax()
+
+	data2 := TreeNode{
+		Val:   1,
+		Left:  nil,
+		Right: nil,
+	}
+	data3 := TreeNode{
+		Val:   3,
+		Left:  nil,
+		Right: nil,
+	}
+	data1 := TreeNode{
+		Val:   2,
+		Left:  &data2,
+		Right: &data3,
+	}
+	res := levelOrder(&data1)
+	fmt.Println(res)
 }
