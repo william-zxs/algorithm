@@ -450,6 +450,22 @@ func isValidBST2(root *TreeNode) bool {
 
 // 二叉搜索树中的插入操作
 // 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	//插入条件
+	if root == nil {
+		return &TreeNode{
+			Val: val,
+		}
+	}
+
+	if root.Val > val {
+		root.Left = insertIntoBST(root.Left, val)
+	}
+	if root.Val < val {
+		root.Right = insertIntoBST(root.Right, val)
+	}
+	return root
+}
 
 func main() {
 
