@@ -14,6 +14,8 @@ algorithm learn
 ## 计算时间复杂度
 
 
+## 链表
+当链表头要变动的时候，需要使用一个dummyNode(哑巴节点)
 
 
 ## golang
