@@ -1,5 +1,5 @@
 # algorithm
-algorithm learn
+algorithm practice
 
 
 
