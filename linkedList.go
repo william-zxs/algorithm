@@ -4,9 +4,27 @@ import (
 	"fmt"
 )
 
+//链表结构体
 type ListNode struct {
 	Val  int
 	Next *ListNode
+}
+
+//根据切片构造链表
+func buildLinkedList(list []int) *ListNode {
+	dummyNode := &ListNode{
+		Val: 0,
+	}
+	head := dummyNode
+	for _, num := range list {
+		fmt.Println("==num==:", num)
+		node := &ListNode{
+			Val: num,
+		}
+		head.Next = node
+		head = node
+	}
+	return dummyNode.Next
 }
 
 //删除排序链表重复元素
@@ -51,28 +69,24 @@ func deleteDuplicates2(head *ListNode) *ListNode {
 
 // 反转链表   递归的方式，还有些问题
 func reverseList2(head *ListNode) *ListNode {
-	if head == nil {
-		return head
+	dummyNode := &ListNode{
+		Val: 0,
 	}
-	_, headRev := doWork(head)
-	return headRev
+	dummyHead := dummyNode
+	_ = reverseLinkedList(head, dummyHead)
+	// fmt.Println("==reverHead==:", reverHead)
+	return dummyNode.Next
 }
-
-func doWork(node *ListNode) (*ListNode, *ListNode) {
-	if node == nil {
-		return nil, nil
+func reverseLinkedList(head *ListNode, dummyNode *ListNode) *ListNode {
+	if head == nil {
+		return dummyNode
 	}
 
-	res, head := doWork(node.Next)
+	reverseHead := reverseLinkedList(head.Next, dummyNode)
+	reverseHead.Next = head
+	head.Next = nil
 
-	if res != nil {
-		res.Next = node
-	} else {
-		head = node
-	}
-	fmt.Println("node==:", node)
-	fmt.Println(node, " ", head)
-	return node, head
+	return head
 }
 
 //反转链表 循环的方式
@@ -273,9 +287,9 @@ func mergeLeftRight(leftHead *ListNode, rightHead *ListNode) *ListNode {
 
 func findMiddle(head *ListNode) *ListNode {
 	// 两个游标， 快的是慢的两倍
-	// 4 2
-	// slow 4 2
-	// fast 4
+	// 12345
+	// slow 1 2 3
+	// fast 2 4 nil
 
 	slow := head
 	fast := head.Next
@@ -286,28 +300,51 @@ func findMiddle(head *ListNode) *ListNode {
 	return slow
 }
 
+//143. 重排链表
+func reorderList(head *ListNode) *ListNode {
+	/**
+	输入: head = [1,2,3,4,5]
+	输出: [1,5,2,4,3]
+	*/
+	// 找中点
+	midNode := findMiddle(head)
+	rightHead := midNode.Next
+	midNode.Next = nil
+	// 反转后半部分
+	revRightHead := reverseList3(rightHead)
+	// 前后两部分合并
+	orderHead := head
+	for revRightHead != nil && head != nil {
+		headNext := head.Next
+		head.Next = revRightHead
+		rightNext := revRightHead.Next
+		revRightHead.Next = headNext
+		head = headNext
+		revRightHead = rightNext
+	}
+	return orderHead
+}
+
+func reverseList3(head *ListNode) *ListNode {
+	var pre *ListNode
+	for head != nil {
+		next := head.Next
+		head.Next = pre
+		pre = head
+		head = next
+	}
+	return pre
+}
+
 func main() {
 
-	node3 := ListNode{
-		Val:  3,
-		Next: nil,
-	}
-	node1 := ListNode{
-		Val:  1,
-		Next: &node3,
-	}
-
-	node2 := ListNode{
-		Val:  2,
-		Next: &node1,
-	}
-	node4 := ListNode{
-		Val:  4,
-		Next: &node2,
-	}
-
-	// 4 2 1 3
-	head := sortList(&node4)
+	//  [1,2,3,4,5]
+	// 1 2
+	// 4 3
+	// 1423
+	data := []int{1, 2, 3, 4}
+	head := buildLinkedList(data)
+	head = reorderList(head)
 	for head != nil {
 		fmt.Println("===node===:", head)
 		head = head.Next
