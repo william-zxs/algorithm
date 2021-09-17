@@ -389,17 +389,124 @@ func detectCycle(head *ListNode) *ListNode {
 	return nil
 }
 
+//234. 回文链表
+func isPalindrome(head *ListNode) bool {
+	//快慢指针
+	if head == nil {
+		return false
+	}
+	//找到中点
+	slow := head
+	fast := head.Next
+
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	// 如果 fast := head.Next，中点就是slow
+	rightHead := slow.Next
+	slow.Next = nil
+
+	//反转后半段
+	var pre *ListNode
+	for rightHead != nil {
+		next := rightHead.Next
+		rightHead.Next = pre
+		pre = rightHead
+		rightHead = next
+	}
+
+	//反转后的和正向的对比
+	for pre != nil && head != nil {
+		if pre.Val != head.Val {
+			return false
+		}
+		pre = pre.Next
+		head = head.Next
+	}
+	return true
+}
+
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+//138. 复制带随机指针的链表
+func copyRandomList(head *Node) *Node {
+	// 思路：1、hash 表存储指针，2、复制节点跟在原节点后面
+	// 采用复制节点的方式
+	if head == nil {
+		return nil
+	}
+	cur := head
+	for cur != nil {
+		fmt.Println("==cur==", cur)
+		copyNode := &Node{
+			Val:  cur.Val,
+			Next: cur.Next,
+		}
+		cur.Next = copyNode
+		cur = copyNode.Next
+
+	}
+
+	//遍历 填入Random
+	cur = head
+	for cur != nil && cur.Next != nil {
+		if cur.Random != nil {
+			cur.Next.Random = cur.Random.Next
+		}
+		cur = cur.Next.Next
+	}
+
+	//分开两个节点
+	cur = head
+	copyHead := head.Next
+	for cur != nil && cur.Next != nil {
+		temp := cur.Next
+		cur.Next = cur.Next.Next
+		cur = temp
+	}
+	return copyHead
+
+}
+
 func main() {
 
 	//  [1,2,3,4,5]
 	// 1 2
 	// 4 3
 	// 1423
-	data := []int{1, 2, 3, 4}
-	head := buildLinkedList(data)
-	head = reorderList(head)
+	// data := []int{1, 2, 1, 2, 1}
+	// head := buildLinkedList(data)
+
+	node3 := &Node{
+		Val: 3,
+	}
+
+	node2 := &Node{
+		Val:    2,
+		Next:   node3,
+		Random: node3,
+	}
+	node1 := &Node{
+		Val:    1,
+		Next:   node2,
+		Random: node3,
+	}
+	head := node1
+
 	for head != nil {
-		fmt.Println("===node===:", head)
+		fmt.Println("1===node===:", head)
+		head = head.Next
+	}
+
+	head = copyRandomList(node1)
+	fmt.Println("===head===:", head)
+	for head != nil {
+		fmt.Println("2===node===:", head)
 		head = head.Next
 	}
 
