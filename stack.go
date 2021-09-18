@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // 155. 最小栈
 type MinStack struct {
@@ -49,17 +52,46 @@ func (this *MinStack) GetMin() int {
 	return this.min[len(this.min)-1]
 }
 
-func main() {
-	stack := Constructor()
-	stack.Push(1)
-	fmt.Println("==min==:", stack.GetMin())
-	stack.Push(0)
-	fmt.Println("==min==:", stack.GetMin())
-	stack.Push(2)
-	fmt.Println("==min==:", stack.GetMin())
+// 150. 逆波兰表达式求值
+func evalRPN(tokens []string) int {
+	//["4","13","5","/","+"]
+	// 符号  + - * /
+	stack := make([]int, 0)
 
-	fmt.Println("==top==:", stack.Top())
-	fmt.Println("==min==:", stack.GetMin())
-	stack.Pop()
-	fmt.Println("==min==:", stack.GetMin())
+	for _, token := range tokens {
+
+		switch token {
+		// 	golang 的 switch 是不下坠的， java 的 switch是会下坠的
+		case "+", "-", "*", "/":
+			intOne := stack[len(stack)-2]
+			intTwo := stack[len(stack)-1]
+
+			var res int
+			switch token {
+			case "+":
+				res = intOne + intTwo
+			case "-":
+				res = intOne - intTwo
+			case "*":
+				res = intOne * intTwo
+			case "/":
+				res = intOne / intTwo
+			}
+			stack = stack[:len(stack)-2]
+			stack = append(stack, res)
+		default:
+			intData, _ := strconv.Atoi(token)
+			stack = append(stack, intData)
+		}
+
+	}
+	return stack[0]
+}
+
+func main() {
+
+	data := []string{"4", "13", "5", "/", "+"}
+	// res := evalRPN(data)
+
+	fmt.Println("==res==", data)
 }
