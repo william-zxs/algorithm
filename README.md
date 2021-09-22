@@ -39,3 +39,39 @@ func reverse(nums [][]int) {
     }
 }
 ```
+
+* 切片解包
+```
+data1 := []int{1,2,3}
+data2 := []int{1,2,3}
+data1 = append(data1,data2...)
+```
+
+
+* 字符串
+```
+str := "Hello,世界"
+//utf-8遍历
+for i := 0; i < len(str); i++ {
+    ch := str[i]
+    fmt.Println(ch)
+}
+fmt.Println("=============>Unicode遍历")
+//Unicode遍历
+for _, ch1 := range str {
+    fmt.Println(ch1)
+}
+```
+```
+1、双引号里的字符串可以转义，不能换行
+
+2、反引号里面的内容不能转义，可以换行，一般用于SQL语句，html等大段内容，以及正则表达式的使用
+
+3、单引号，一般只能用来包裹一个字节的ASCII码字符，例如：
+var asc byte = ‘a’
+fmt.Println(asc) //输出a的ASCII码值 97
+```
+
+### TODO
+
+golang切片的指针

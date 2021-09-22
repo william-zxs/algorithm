@@ -88,10 +88,135 @@ func evalRPN(tokens []string) int {
 	return stack[0]
 }
 
+//394. 字符串解码
+func decodeString(s string) string {
+	// 用栈的方式
+	stack := make([]byte, 0)
+	for _, item := range s {
+		if string(item) == "]" {
+			// 找到上一个"["
+			tempStack := make([]byte, 0)
+			for i := len(stack) - 1; i >= 0; i-- {
+				if string(stack[i]) == "[" {
+					stack = stack[:i]
+					break
+				}
+				tempStack = append([]byte{stack[i]}, tempStack...)
+			}
+
+			countStack := make([]byte, 0)
+			for i := len(stack) - 1; i >= 0; i-- {
+				_, err := strconv.Atoi(string(stack[i]))
+				if err != nil {
+					if len(countStack) == 0 {
+						return "==err=="
+					}
+					break
+				}
+				countStack = append([]byte{stack[i]}, countStack...)
+				stack = stack[:len(stack)-1]
+			}
+
+			count, err := strconv.Atoi(string(countStack))
+			if err != nil {
+				return "==err=="
+			}
+			tempCopy := tempStack
+			for i := 0; i < count-1; i++ {
+				tempStack = append(tempStack, tempCopy...)
+			}
+			stack = append(stack, tempStack...)
+		} else {
+			stack = append(stack, byte(item))
+		}
+
+	}
+
+	return string(stack)
+}
+
+//394. 字符串解码
+func decodeString2(s string) string {
+	// 递归的方式
+	// "e3[a10[b]]c2[dd]"
+	data, err, _ := parseStr(s)
+	if err != "" {
+		return err
+	}
+	return string(data)
+}
+
+//按照倍数构造切片
+func multiCount(stack []byte, strStack []byte) ([]byte, string) {
+	countStack := make([]byte, 0)
+	for i := len(stack) - 1; i >= 0; i-- {
+		_, err := strconv.Atoi(string(stack[i]))
+		if err != nil {
+			if len(countStack) == 0 {
+				fmt.Println("==stack[i]==", string(stack[i]))
+				return nil, "==strconv.Atoi==err1"
+			}
+			break
+		}
+		countStack = append([]byte{(stack)[i]}, countStack...)
+		stack = stack[:len(stack)-1]
+	}
+
+	count, err := strconv.Atoi(string(countStack))
+	if err != nil {
+		return nil, "==strconv.Atoi==err2"
+	}
+	for i := 0; i < count; i++ {
+		stack = append(stack, strStack...)
+	}
+	fmt.Println("==multiCount==", string(stack))
+	return stack, ""
+}
+
+// a10[b]
+func parseStr(s string) ([]byte, string, string) {
+	stack := make([]byte, 0)
+
+	for i := 0; i < len(s); i++ {
+		if string(s[i]) == "[" {
+			strStack, err, resStr := parseStr(s[i+1:])
+			if err != "" {
+				return nil, err, resStr
+			}
+			fmt.Println("==strStack==", string(strStack))
+			stack, err = multiCount(stack, strStack)
+			if resStr != "" {
+				resStrStack, err, resStr := parseStr(resStr)
+				return append(stack, resStrStack...), err, resStr
+			}
+			return stack, "", ""
+
+		} else if string(s[i]) == "]" {
+			if len(s)-1 > i {
+				return stack, "", s[i+1:]
+			}
+			return stack, "", ""
+		} else if s[i] >= '0' && s[i] <= '9' {
+			//数字
+			stack = append(stack, s[i])
+		} else {
+			//字母
+			stack = append(stack, s[i])
+		}
+	}
+	if len(stack) == 0 {
+		return nil, "==1==", ""
+	}
+	return stack, "", ""
+}
+
 func main() {
 
-	data := []string{"4", "13", "5", "/", "+"}
+	// data := []string{"4", "13", "5", "/", "+"}
 	// res := evalRPN(data)
-
-	fmt.Println("==res==", data)
+	// byte() 怎么用的
+	//abbbbabbbbabbbb ccdddddddddd
+	s := "3[a2[bb]]cc10[d]"
+	res := decodeString2(s)
+	fmt.Println("==res==", res)
 }
