@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 // 155. 最小栈
 type MinStack struct {
 	min   []int
@@ -208,6 +214,41 @@ func parseStr(s string) ([]byte, string, string) {
 		return nil, "==1==", ""
 	}
 	return stack, "", ""
+}
+
+//94. 二叉树的中序遍历
+func inorderTraversal(root *TreeNode) (list []int) {
+	// 栈的方式
+	stack := make([]*TreeNode, 0)
+	for root != nil || len(stack) > 0 {
+		for root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		}
+
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		list = append(list, node.Val)
+		root = node.Right
+	}
+	return
+}
+
+//递归的方式
+func inorderTraversal2(root *TreeNode) (list []int) {
+	return inorderWork(root)
+}
+
+func inorderWork(root *TreeNode) (list []int) {
+	if root == nil {
+		return
+	}
+	resLeft := inorderWork(root.Left)
+	list = append(list, resLeft...)
+	list = append(list, root.Val)
+	resRight := inorderWork(root.Right)
+	list = append(list, resRight...)
+	return
 }
 
 func main() {

@@ -5,6 +5,12 @@ import (
 	"math"
 )
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 func forDemo() {
 	for i := 0; i < 10; i++ {
 		fmt.Printf("===i===:%d ", i)
@@ -67,12 +73,6 @@ func getNodeDepth(root *TreeNode) int {
 		return leftRes + 1
 	}
 	return rightRes + 1
-}
-
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
 }
 
 func isBalanced(root *TreeNode) bool {
