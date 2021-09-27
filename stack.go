@@ -11,6 +11,11 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+type Node struct {
+	Val       int
+	Neighbors []*Node
+}
+
 // 155. 最小栈
 type MinStack struct {
 	min   []int
@@ -251,13 +256,69 @@ func inorderWork(root *TreeNode) (list []int) {
 	return
 }
 
+//133. 克隆图
+func cloneGraph(node *Node) *Node {
+	//采用哈希表和递归
+	visited := map[*Node]*Node{}
+	var cg func(node *Node) *Node
+	cg = func(node *Node) *Node {
+		if node == nil {
+			return node
+		}
+		if v, ok := visited[node]; ok {
+			return v
+		}
+
+		cloneNode := &Node{node.Val, []*Node{}}
+		visited[node] = cloneNode
+
+		for _, ne := range node.Neighbors {
+			cloneNode.Neighbors = append(cloneNode.Neighbors, cg(ne))
+		}
+		return cloneNode
+	}
+	return cg(node)
+}
+
+func cloneGraph2(node *Node) *Node {
+	visited := map[*Node]*Node{}
+	var cg func(node *Node) *Node
+	cg = func(node *Node) *Node {
+		if node == nil {
+			return node
+		}
+
+		// 如果该节点已经被访问过了，则直接从哈希表中取出对应的克隆节点返回
+		if _, ok := visited[node]; ok {
+			return visited[node]
+		}
+
+		// 克隆节点，注意到为了深拷贝我们不会克隆它的邻居的列表
+		cloneNode := &Node{node.Val, []*Node{}}
+		// 哈希表存储
+		visited[node] = cloneNode
+
+		// 遍历该节点的邻居并更新克隆节点的邻居列表
+		for _, n := range node.Neighbors {
+			cloneNode.Neighbors = append(cloneNode.Neighbors, cg(n))
+		}
+		return cloneNode
+	}
+	return cg(node)
+}
+
 func main() {
 
 	// data := []string{"4", "13", "5", "/", "+"}
 	// res := evalRPN(data)
 	// byte() 怎么用的
 	//abbbbabbbbabbbb ccdddddddddd
-	s := "3[a2[bb]]cc10[d]"
-	res := decodeString2(s)
+	// s := "3[a2[bb]]cc10[d]"
+	// res := decodeString2(s)
+	// fmt.Println("==res==", res)
+
+	node := &Node{Val: 1}
+
+	res := cloneGraph(node)
 	fmt.Println("==res==", res)
 }
