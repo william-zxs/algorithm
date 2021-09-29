@@ -258,7 +258,7 @@ func inorderWork(root *TreeNode) (list []int) {
 
 //133. 克隆图
 func cloneGraph(node *Node) *Node {
-	//采用哈希表和递归
+	//采用哈希表和递归  精髓在于用哈希表记录下已经clone的节点
 	visited := map[*Node]*Node{}
 	var cg func(node *Node) *Node
 	cg = func(node *Node) *Node {
@@ -280,45 +280,295 @@ func cloneGraph(node *Node) *Node {
 	return cg(node)
 }
 
-func cloneGraph2(node *Node) *Node {
-	visited := map[*Node]*Node{}
-	var cg func(node *Node) *Node
-	cg = func(node *Node) *Node {
-		if node == nil {
-			return node
-		}
+//200. 岛屿数量
+func numIslands(grid [][]byte) int {
+	//深度搜索优先  哈希表 记录下位置，位置是x、y 决定
+	visited := map[string]int{}
+	count := 0
+	//遍历 二维切片
+	for y := 0; y < len(grid); y++ {
+		yline := grid[y]
+		for x := 0; x < len(yline); x++ {
+			if string(yline[x]) == "1" {
+				//m的上下左右 四个方位都要搜索，如果找到"0"那么就是岛屿
+				xStr := strconv.Itoa(x)
+				yStr := strconv.Itoa(y)
+				if _, ok := visited[xStr+yStr]; ok {
+					continue
+				}
+				//肯定是一个岛屿
+				count += 1
 
-		// 如果该节点已经被访问过了，则直接从哈希表中取出对应的克隆节点返回
-		if _, ok := visited[node]; ok {
-			return visited[node]
-		}
+				//把连接的节点放进哈希表
+				//右边
+				for m := x + 1; m < len(yline); m++ {
+					if string(yline[m]) == "0" {
+						break
+					} else {
+						if _, ok := visited[strconv.Itoa(m)+yStr]; ok {
+							continue
+						} else {
+							visited[strconv.Itoa(m)+yStr] = 1
+						}
 
-		// 克隆节点，注意到为了深拷贝我们不会克隆它的邻居的列表
-		cloneNode := &Node{node.Val, []*Node{}}
-		// 哈希表存储
-		visited[node] = cloneNode
-
-		// 遍历该节点的邻居并更新克隆节点的邻居列表
-		for _, n := range node.Neighbors {
-			cloneNode.Neighbors = append(cloneNode.Neighbors, cg(n))
+						//下边
+						for n := y + 1; n < len(grid); n++ {
+							if string(grid[n][m]) == "0" {
+								break
+							} else {
+								if _, ok := visited[strconv.Itoa(m)+strconv.Itoa(n)]; ok {
+									continue
+								} else {
+									visited[strconv.Itoa(m)+strconv.Itoa(n)] = 1
+								}
+							}
+						}
+					}
+				}
+				//下边
+				for n := y + 1; n < len(grid); n++ {
+					if string(grid[n][x]) == "0" {
+						break
+					} else {
+						if _, ok := visited[xStr+strconv.Itoa(n)]; ok {
+							continue
+						} else {
+							visited[xStr+strconv.Itoa(n)] = 1
+						}
+					}
+					//右边
+					for m := x + 1; m < len(yline); m++ {
+						if string(grid[n][m]) == "0" {
+							break
+						} else {
+							if _, ok := visited[strconv.Itoa(m)+strconv.Itoa(n)]; ok {
+								continue
+							} else {
+								visited[strconv.Itoa(m)+strconv.Itoa(n)] = 1
+							}
+						}
+					}
+					//左边
+					for m := x - 1; m >= 0; m-- {
+						if string(grid[n][m]) == "0" {
+							break
+						} else {
+							if _, ok := visited[strconv.Itoa(m)+strconv.Itoa(n)]; ok {
+								continue
+							} else {
+								visited[strconv.Itoa(m)+strconv.Itoa(n)] = 1
+							}
+						}
+					}
+				}
+			}
 		}
-		return cloneNode
 	}
-	return cg(node)
+	//统计数量
+	return count
+}
+
+func numIslands2(grid [][]byte) int {
+	if grid == nil {
+		return 0
+	}
+	count := 0
+	xLength := len(grid[0])
+	yLength := len(grid)
+	var dfsIslands func(y, x int)
+	dfsIslands = func(y, x int) {
+		if !(y >= 0 && y < yLength && x >= 0 && x < xLength) {
+			return
+		}
+
+		if string(grid[y][x]) == "1" {
+			grid[y][x] = 0
+			//上
+			dfsIslands(y-1, x)
+			//下
+			dfsIslands(y+1, x)
+			//左
+			dfsIslands(y, x-1)
+			//右
+			dfsIslands(y, x+1)
+		}
+	}
+
+	for y := 0; y < yLength; y++ {
+		for x := 0; x < xLength; x++ {
+			if string(grid[y][x]) == "1" {
+				count += 1
+				dfsIslands(y, x)
+			}
+		}
+	}
+	return count
+}
+
+// 84. 柱状图中最大的矩形
+func largestRectangleArea2(heights []int) int {
+	// 此种方式需要两层循环，时间复杂度是O(n^2),在leedcode会超时
+	maxArea := 0
+	for cur := 0; cur < len(heights); cur++ {
+		// stack := make([]int, 0)
+		minStack := make([]int, 0)
+		for i := cur; i < len(heights); i++ {
+			if len(minStack) == 0 {
+				minStack = append(minStack, heights[i])
+			} else {
+				if minStack[len(minStack)-1] > heights[i] {
+					minStack = append(minStack, heights[i])
+				} else {
+					minStack = append(minStack, minStack[len(minStack)-1])
+				}
+			}
+			area := len(minStack) * minStack[len(minStack)-1]
+			if area > maxArea {
+				maxArea = area
+			}
+		}
+	}
+	return maxArea
+}
+
+// 84. 柱状图中最大的矩形
+func largestRectangleArea3(heights []int) int {
+	//一层循环的方式   这个效率不高，也会超时
+	h := 0
+	maxArea := 0
+	for i := 0; i < len(heights); i++ {
+		h = heights[i]
+		lcount := 0
+		rcount := 0
+		//等于0的情况不用考虑
+		if h > 0 {
+			// left
+			for m := i - 1; m >= 0; m-- {
+				hl := heights[m]
+				if hl < h {
+					break
+				}
+				lcount++
+			}
+			// right
+			for m := i + 1; m < len(heights); m++ {
+				hr := heights[m]
+				if hr < h {
+					break
+				}
+				rcount++
+			}
+
+			area := (lcount + rcount + 1) * h
+			if area > maxArea {
+				maxArea = area
+			}
+		}
+
+	}
+	return maxArea
+}
+
+// 84. 柱状图中最大的矩形
+// 单调栈(mono_stack)问题
+func largestRectangleArea(heights []int) int {
+	left, right := make([]int, len(heights)), make([]int, len(heights))
+	monoStack := make([]int, 0)
+	maxArea := 0
+
+	// 计算left
+	for i := 0; i < len(heights); i++ {
+
+		for len(monoStack) > 0 && heights[monoStack[len(monoStack)-1]] >= heights[i] {
+			monoStack = monoStack[:len(monoStack)-1]
+		}
+		if len(monoStack) == 0 {
+			left[i] = -1
+		} else {
+			left[i] = monoStack[len(monoStack)-1]
+		}
+		monoStack = append(monoStack, i)
+	}
+
+	// 计算right
+	monoStack = []int{}
+	for i := len(heights) - 1; i >= 0; i-- {
+		for len(monoStack) > 0 && heights[monoStack[len(monoStack)-1]] >= heights[i] {
+			monoStack = monoStack[:len(monoStack)-1]
+		}
+		if len(monoStack) == 0 {
+			right[i] = len(heights)
+		} else {
+			right[i] = monoStack[len(monoStack)-1]
+		}
+		monoStack = append(monoStack, i)
+		fmt.Println("==right==", right)
+	}
+	// left [-1,0]
+	// right [2,2]
+	//       2*0  1*9
+
+	fmt.Println("==right==", right, "==left==", left)
+	for i := 0; i < len(heights); i++ {
+		area := heights[i] * (right[i] - left[i] - 1)
+		if area > maxArea {
+			maxArea = area
+		}
+	}
+	return maxArea
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+//单调栈  42、 84、739、496、316、901、402、581 题
+//我们用一个具体的例子 [6,7,5,2,4,5,9,3] 来帮助读者理解单调栈。
+//我们需要求出每一根柱子的左右两侧且最近的小于其高度的柱子。初始时的栈为空。
+func monotonic() {
+	data := []int{6, 7, 5, 2, 4, 5, 9, 3}
+	// 1 4 3 2 4
+	indexStack := make([]int, len(data))
+	monoStack := make([]int, 0)
+	//左边
+	for i := 0; i < len(data); i++ {
+		count := 1
+		fmt.Println("==monoStack==", monoStack)
+		for len(monoStack) > 0 && monoStack[len(monoStack)-1] >= data[i] {
+			monoStack = monoStack[:len(monoStack)-1]
+			count++
+		}
+
+		if len(monoStack) == 0 {
+			indexStack[i] = -1
+		} else {
+			indexStack[i] = monoStack[len(monoStack)-1]
+		}
+		monoStack = append(monoStack, data[i])
+	}
+	fmt.Print("==indexStack==", indexStack)
 }
 
 func main() {
 
-	// data := []string{"4", "13", "5", "/", "+"}
-	// res := evalRPN(data)
-	// byte() 怎么用的
-	//abbbbabbbbabbbb ccdddddddddd
-	// s := "3[a2[bb]]cc10[d]"
-	// res := decodeString2(s)
+	// data := [][]byte{
+	// 	{[]byte("1")[0], []byte("0")[0], []byte("0")[0], []byte("1")[0], []byte("0")[0]},
+	// 	{[]byte("0")[0], []byte("1")[0], []byte("0")[0], []byte("1")[0], []byte("0")[0]}}
+
+	//[["1","1","1"],
+	//["0","1","0"],
+	//["1","1","1"]]
+
+	// 深度搜索优先
+
+	// res := numIslands2(data)
+	// data := []int{2, 1, 5, 6, 2, 3}
+	// res := largestRectangleArea(data)
 	// fmt.Println("==res==", res)
-
-	node := &Node{Val: 1}
-
-	res := cloneGraph(node)
+	data := []int{0, 9}
+	res := largestRectangleArea(data)
 	fmt.Println("==res==", res)
 }
