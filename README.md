@@ -46,13 +46,20 @@ func reverse(nums [][]int) {
 }
 ```
 
-* 切片解包
+* 切片
+
+
 ```
+//切片解包
 data1 := []int{1,2,3}
 data2 := []int{1,2,3}
 data1 = append(data1,data2...)
 ```
-
+```
+//这样操作是可以的，结果是空的切片
+data := []int{1}
+data = data[1:]
+```
 
 * 字符串
 ```
