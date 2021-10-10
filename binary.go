@@ -59,7 +59,7 @@ func singleNumber(nums []int) int {
 }
 
 //137. 只出现一次的数字 II
-func singleNumber3(nums []int) int {
+func singleNumber22(nums []int) int {
 	ans := int32(0)
 	for i := 0; i < 32; i++ {
 		sum := 0
@@ -73,14 +73,38 @@ func singleNumber3(nums []int) int {
 	return int(ans)
 }
 
-func main() {
-	nums := []int{2, 2, 1}
-	res := singleNumber(nums)
-	fmt.Println("==res==", res)
+//260. 只出现一次的数字 III
+func singleNumber3(nums []int) []int {
+	// 解题思路
+	// 通过异或的结果 找到一个1的位，说明两个出现的一次的数这位是不同的，所以用来分成两组，再异或求值就可以了
+	res := 0
+	for i := 0; i < len(nums); i++ {
+		res = res ^ nums[i]
+	}
 
-	data := make(map[int]int, 0)
-	data[1] = 1
-	data[2] = 2
-	delete(data, 1)
-	fmt.Println("==data==", data)
+	index := 0
+	for i := 0; i < 32; i++ {
+		diff := res >> i & 1
+		if diff == 1 {
+			index = i
+			break
+		}
+	}
+	numOne := 0
+	numTwo := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i]>>index&1 == 0 {
+			numOne = numOne ^ nums[i]
+		} else {
+			numTwo = numTwo ^ nums[i]
+		}
+
+	}
+	return []int{numOne, numTwo}
+}
+
+func main() {
+	nums := []int{1, 2, 1, 3, 2, 5}
+	res := singleNumber3(nums)
+	fmt.Println("==res==", res)
 }
