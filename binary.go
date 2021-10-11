@@ -160,6 +160,28 @@ func reverseBits(num uint32) uint32 {
 	return uint32(res)
 }
 
+//201. 数字范围按位与
+func rangeBitwiseAnd(left int, right int) int {
+	//给你两个整数 left 和 right ，表示区间 [left, right] ，
+	//返回此区间内所有数字 按位与 的结果（包含 left 、right 端点）。
+
+	res := left
+	for i := left + 1; i <= right; i++ {
+		res = res & i
+	}
+	return res
+}
+
+//461. 汉明距离
+func hammingDistance(x int, y int) int {
+	res := x ^ y
+	count := 0
+	for res != 0 {
+		res = res & (res - 1)
+		count++
+	}
+	return count
+}
 func main() {
 	nums := []int{1, 2, 1, 3, 2, 5}
 	res := singleNumber3(nums)
