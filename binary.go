@@ -103,6 +103,63 @@ func singleNumber3(nums []int) []int {
 	return []int{numOne, numTwo}
 }
 
+//191. 位1的个数
+func hammingWeight(num uint32) int {
+	count := 0
+	for i := 0; i < 32; i++ {
+		if num>>i&1 == 1 {
+			count += 1
+		}
+	}
+	return count
+}
+
+//191. 位1的个数
+func hammingWeight2(num uint32) int {
+	count := 0
+	for num != 0 {
+		num = num & (num - 1)
+		count++
+	}
+	return count
+}
+
+// 338. 比特位计数
+func countBits(n int) []int {
+	res := make([]int, 0)
+	for i := 0; i <= n; i++ {
+		num := i
+		count := 0
+		for num != 0 {
+			num = num & (num - 1)
+			count++
+		}
+		res = append(res, count)
+	}
+	return res
+}
+
+// 338. 比特位计数
+func countBits2(n int) []int {
+	//动态规划的方式
+	res := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		res[i] = res[i&(i-1)] + 1
+	}
+	return res
+}
+
+//190. 颠倒二进制位
+func reverseBits(num uint32) uint32 {
+	//思路
+	//通过位移运算符计算每一位，然后位移到正确位置，相加得到最终结果
+	res := uint32(0)
+	for i := 0; i < 32; i++ {
+		res += (num >> i & 1) << (31 - i)
+	}
+	return uint32(res)
+}
+
 func main() {
 	nums := []int{1, 2, 1, 3, 2, 5}
 	res := singleNumber3(nums)
