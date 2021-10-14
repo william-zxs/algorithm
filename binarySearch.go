@@ -216,7 +216,10 @@ func searchMatrix(matrix [][]int, target int) bool {
 	}
 }
 
-func isBadVersion(version int) bool
+func isBadVersion(version int) bool {
+	// do some thing
+	return true
+}
 
 //278. 第一个错误的版本
 func firstBadVersion(n int) int {
@@ -238,12 +241,63 @@ func firstBadVersion(n int) int {
 	}
 }
 
+//153. 寻找旋转排序数组中的最小值
+func findMin(nums []int) int {
+	// 6712345
+	// 3456712
+	// 1234567
+	// 2345671
+	// 21
+	left := 0
+	right := len(nums) - 1
+
+	for left < right {
+		mid := left + (right-left)/2
+		if nums[mid] >= nums[left] {
+			if nums[right] > nums[left] {
+				return nums[left]
+			}
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return nums[left]
+}
+
+//154. 寻找旋转排序数组中的最小值 II
+func findMin2(nums []int) int {
+	// 可重复
+	// 22012
+	// 20122
+	// [3,3,1,3]
+	left := 0
+	right := len(nums) - 1
+	for left+1 < right {
+		mid := left + (right-left)/2
+
+		fmt.Println("==left==", left, "==mid==", mid, " ==right==", right)
+		if nums[left] == nums[mid] && nums[mid] == nums[right] {
+			left = left + 1
+			right = right - 1
+		} else if nums[mid] <= nums[right] {
+			right = mid
+		} else {
+			left = mid
+		}
+	}
+	if nums[left] <= nums[right] {
+		return nums[left]
+	}
+	return nums[right]
+}
+
 func main() {
 
-	// data := []int{9, 10, 100, 101, 1002, 10203}
+	data := []int{3, 3, 1, 3}
 
-	data := [][]int{{1, 3}}
+	// data := [][]int{{1, 3}}
 
-	res := searchMatrix(data, 3)
+	res := findMin2(data)
 	fmt.Println("==res==", res)
 }
