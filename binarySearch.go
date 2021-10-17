@@ -292,12 +292,97 @@ func findMin2(nums []int) int {
 	return nums[right]
 }
 
+//33. 搜索旋转排序数组
+func search3(nums []int, target int) int {
+	/*
+		给你 旋转后 的数组 nums 和一个整数 target，
+		如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+	*/
+	//输入：nums = [4,5,6,7,0,1,2], target = 0
+	//输出：4
+	// [1,3]
+	// 思路：将数组在中间分成两部分，一定有一部分是有序数组
+
+	if len(nums) == 0 {
+		return -1
+	}
+	if len(nums) == 1 {
+		if nums[0] == target {
+			return 0
+		} else {
+			return -1
+		}
+	}
+
+	if len(nums) == 2 {
+		if nums[0] == target {
+			return 0
+		} else if nums[1] == target {
+			return 1
+		} else {
+			return -1
+		}
+	}
+
+	res := -1
+	left := 0
+	right := len(nums) - 1
+	mid := left + (right-left)/2
+	// 3 1
+	if nums[left] < nums[mid] && nums[mid] < nums[right] {
+		// 两部分都是有序的
+
+		//1
+		res = search2(nums[left:mid+1], target)
+		if res != -1 {
+			return res + left
+		}
+		//2
+		res = search2(nums[mid+1:right+1], target)
+		if res != -1 {
+			return res + mid + 1
+		}
+	} else if nums[left] < nums[mid] {
+		// 第一部分是有序
+		res = search2(nums[left:mid+1], target)
+		if res != -1 {
+			return res + left
+		}
+
+		//第二部分
+		res = search3(nums[mid+1:right+1], target)
+		if res != -1 {
+			return res + mid + 1
+		}
+	} else {
+		//第二部分是有序
+		res = search2(nums[mid:right+1], target)
+		if res != -1 {
+			return res + mid
+		}
+		// 第一部分
+		res = search3(nums[left:mid], target)
+		if res != -1 {
+			return res + left
+		}
+
+	}
+
+	return res
+}
+
+//81. 搜索旋转排序数组 II
+// func search4(nums []int, target int) bool {
+// 	// nums可能重复，从小到大排序并旋转
+// }
+
 func main() {
 
-	data := []int{3, 3, 1, 3}
+	data := []int{3, 1}
 
 	// data := [][]int{{1, 3}}
+	// fmt.Println("==1==", data[0:0], "==2==", data[0:1])
 
-	res := findMin2(data)
+	res := search3(data, 1)
 	fmt.Println("==res==", res)
 }
