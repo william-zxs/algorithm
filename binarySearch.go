@@ -372,17 +372,58 @@ func search3(nums []int, target int) int {
 }
 
 //81. 搜索旋转排序数组 II
-// func search4(nums []int, target int) bool {
-// 	// nums可能重复，从小到大排序并旋转
-// }
+func search4(nums []int, target int) bool {
+	// nums可能重复，从小到大排序并旋转  存在为true、不存在为false
+	//特点： 允许重复 需要考虑 left mid right 相等的情况，最坏的情况 全相等且不等于target O(N),平均是O(log(n))
+	if nums == nil || len(nums) == 0 {
+		return false
+	}
+
+	if len(nums) == 1 {
+		if nums[0] == target {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	//开始二分
+	left := 0
+	right := len(nums) - 1
+	for left+1 < right {
+		mid := left + (right-left)/2
+		if nums[mid] == target {
+			return true
+		} else if nums[mid] == nums[left] && nums[mid] == nums[right] {
+			left += 1
+			right -= 1
+		} else if nums[mid] >= nums[left] {
+			if target <= nums[mid] && target >= nums[left] {
+				right = mid
+			} else {
+				left = mid
+			}
+		} else {
+			if target <= nums[right] && target >= nums[mid] {
+				left = mid
+			} else {
+				right = mid
+			}
+		}
+	}
+	if nums[left] == target || nums[right] == target {
+		return true
+	}
+	return false
+}
 
 func main() {
 
-	data := []int{3, 1}
+	data := []int{5, 1, 3}
 
 	// data := [][]int{{1, 3}}
 	// fmt.Println("==1==", data[0:0], "==2==", data[0:1])
 
-	res := search3(data, 1)
+	res := search4(data, 3)
 	fmt.Println("==res==", res)
 }
