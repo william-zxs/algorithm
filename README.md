@@ -17,6 +17,9 @@ algorithm practice
 
 * 动态规划
 
+## 排序
+* 快排
+
 ## 计算时间复杂度
 
 
