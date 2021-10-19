@@ -27,7 +27,7 @@ func quickSort(nums []int, start, end int) {
 
 	p := nums[end]
 	j := start
-	for i := 0; i < len(nums); i++ {
+	for i := start; i < len(nums); i++ {
 		if nums[i] < p {
 			//交换 i 和 j
 			swap(nums, i, j)
