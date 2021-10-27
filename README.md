@@ -17,6 +17,8 @@ algorithm practice
 
 * 动态规划
 
+* 贪心算法
+
 ## 排序
 * 快排
 
