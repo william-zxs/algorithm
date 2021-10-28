@@ -147,10 +147,85 @@ func climbStairs(n int) int {
 
 	return dp[n]
 }
+
+//55. 跳跃游戏
+func canJump(nums []int) bool {
+	zeroI := -1
+	for i := len(nums) - 2; i >= 0; i-- {
+
+		if nums[i] == 0 && zeroI == -1 {
+			zeroI = i
+			continue
+		}
+		if zeroI != -1 {
+			if nums[i]-nums[zeroI] > zeroI-i {
+				zeroI = -1
+			}
+		}
+	}
+	if zeroI != -1 {
+		return false
+	}
+	return true
+}
+
+//55. 跳跃游戏
+// 动态规划的解决办法
+func canJump2(nums []int) bool {
+	// 思路：看最后一跳
+	// 状态：f[i] 表示是否能从0跳到i
+	// 推导：f[i] = OR(f[j],j<i&&j能跳到i) 判断之前所有的点最后一跳是否能跳到当前点
+	// 初始化：f[0] = 0
+	// 结果： f[n-1]
+	if len(nums) == 0 {
+		return true
+	}
+	f := make([]bool, len(nums))
+	f[0] = true
+	for i := 1; i < len(nums); i++ {
+		for j := 0; j < i; j++ {
+			if f[j] == true && nums[j]+j >= i {
+				f[i] = true
+			}
+		}
+	}
+	return f[len(nums)-1]
+}
+
+// 45. 跳跃游戏 II
+func jump(nums []int) int {
+	//维护一个可跳最远的长度，直到超过最后一个
+	if len(nums) <= 1 {
+		return 0
+	}
+	maxI := 0     //3 5
+	count := 0    //1
+	stepMaxI := 0 //3
+	for i := 0; i < len(nums); i++ {
+		maxI = max(nums[i]+i, maxI)
+		if maxI >= len(nums)-1 {
+			count++
+			break
+		}
+		if i >= stepMaxI {
+			count++
+			stepMaxI = maxI
+		}
+	}
+	return count
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
 func main() {
 	// triangle := [][]int{{1, 3, 1}, {1, 5, 1}, {4, 2, 1}}
 	// res := minPathSum(triangle)
 	// res := uniquePaths(3, 7)
-	res := climbStairs(10)
+	res := jump([]int{3, 4, 3, 2, 5, 4, 3})
 	fmt.Println("==res==:", res)
 }
