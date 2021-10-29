@@ -364,6 +364,35 @@ func longestPalindrome(s string) string {
 	return maxS
 }
 
+// 139. 单词拆分
+func wordBreak(s string, wordDict []string) bool {
+	// 动态规划 先找到状态转移方程
+	// dp[i]=dp[j] && check(s[j..i−1])
+	wordDictSet := make(map[string]bool)
+	for _, w := range wordDict {
+		wordDictSet[w] = true
+	}
+	dp := make([]bool, len(s)+1)
+	dp[0] = true
+	for i := 1; i <= len(s); i++ {
+		for j := 0; j < i; j++ {
+			if dp[j] && wordDictSet[s[j:i]] {
+				dp[i] = true
+				break
+			}
+		}
+	}
+	return dp[len(s)]
+}
+
+func isInWordDict(s string, wordDict []string) {
+	for word := range wordDict {
+		if word == s {
+			return true
+		}
+	}
+	return true
+}
 func main() {
 	// res := minCut("aabb")
 	// partition("aab")
