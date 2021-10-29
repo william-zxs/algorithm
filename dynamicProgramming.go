@@ -291,12 +291,86 @@ func lengthOfLIS(nums []int) int {
 	return maxL
 }
 
-func main() {
-	// triangle := [][]int{{1, 3, 1}, {1, 5, 1}, {4, 2, 1}}
-	// res := minPathSum(triangle)
-	// res := uniquePaths(3, 7)
-	// res := jump([]int{3, 4, 3, 2, 5, 4, 3})
+//131. 分割回文串
+/*
+给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+*/
+func partition(s string) (ans [][]string) {
+	n := len(s)
+	f := make([][]bool, n)
+	for i := range f {
+		f[i] = make([]bool, n)
+		for j := range f[i] {
+			f[i][j] = true
+		}
+	}
+	for i := n - 1; i >= 0; i-- {
+		for j := i + 1; j < n; j++ {
+			f[i][j] = s[i] == s[j] && f[i+1][j-1]
+		}
+	}
+	fmt.Println("==f==:", f)
+	splits := []string{}
+	var dfs func(int)
+	dfs = func(i int) {
+		if i == n {
+			ans = append(ans, append([]string(nil), splits...))
+			return
+		}
+		for j := i; j < n; j++ {
+			if f[i][j] {
+				splits = append(splits, s[i:j+1])
+				dfs(j + 1)
+				fmt.Println("==ans==0:", ans)
+				fmt.Println("==splits==1:", splits)
+				splits = splits[:len(splits)-1]
+				fmt.Println("==splits==2:", splits)
+			}
+		}
+	}
+	dfs(0)
+	return
 
-	res := minCut("aabb")
+}
+
+// 5. 最长回文子串
+func longestPalindrome(s string) string {
+	// 动态规划 先初始化所有的状态
+	// f(x,y) = f(x+1,y-1) && s[x]==s[y]
+	n := len(s)
+	f := make([][]bool, n)
+	for i := 0; i < n; i++ {
+		f[i] = make([]bool, n)
+		for j := 0; j < n; j++ {
+			f[i][j] = true
+		}
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		for y := i + 1; y < n; y++ {
+			f[i][y] = f[i+1][y-1] && s[i] == s[y]
+		}
+	}
+	maxS := ""
+	for i := 0; i < n; i++ {
+		for y := 0; y < n; y++ {
+			if y >= i && f[i][y] {
+				if y-i+1 > len(maxS) {
+					maxS = s[i : y+1]
+				}
+			}
+		}
+	}
+	return maxS
+}
+
+func main() {
+	// res := minCut("aabb")
+	// partition("aab")
+
+	// splits := []string{"a", "b", "c", "d"}
+	// splits = splits[:len(splits)-1]
+
+	res := partition("aab")
 	fmt.Println("==res==:", res)
 }
