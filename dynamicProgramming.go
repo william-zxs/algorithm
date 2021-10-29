@@ -214,7 +214,6 @@ func jump(nums []int) int {
 	}
 	return count
 }
-
 func max(x, y int) int {
 	if x > y {
 		return x
@@ -222,10 +221,82 @@ func max(x, y int) int {
 	return y
 }
 
+// 132. 分割回文串 II
+/*
+给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文。
+返回符合要求的 最少分割次数 。
+*/
+func minCut(s string) int {
+	// state: f[i] "前i"个字符组成的子字符串需要最少几次cut(个数-1为索引)
+	// function: f[i] = MIN{f[j]+1}, j < i && [j+1 ~ i]这一段是一个回文串
+	// intialize: f[i] = i - 1 (f[0] = -1)
+	// answer: f[s.length()]
+	// aabb
+	n := len(s) // 4
+	g := make([][]bool, n)
+	for i := range g {
+		g[i] = make([]bool, n)
+		for j := range g[i] {
+			g[i][j] = true
+		}
+	}
+	for i := n - 1; i >= 0; i-- {
+		// i= 3
+		// i = 2
+		for j := i + 1; j < n; j++ {
+			// j = 4
+			// j = 3
+			g[i][j] = s[i] == s[j] && g[i+1][j-1]
+			//g[2][3] = s[2] == s[3] &&g[3][2]
+
+		}
+	}
+
+	f := make([]int, n)
+	for i := range f {
+		if g[0][i] {
+			continue
+		}
+		f[i] = math.MaxInt64
+		for j := 0; j < i; j++ {
+			if g[j+1][i] && f[j]+1 < f[i] {
+				f[i] = f[j] + 1
+			}
+		}
+	}
+	return f[n-1]
+}
+
+// 300. 最长递增子序列
+func lengthOfLIS(nums []int) int {
+	//思路 动态规划，先找到转移方程
+	// f[i] 到i为止的最长子序列长度
+	// f[i] = max(f[j])+1  a[j]<a[i]
+
+	// e.g.  [1,3,2,5,4]
+	f := make([]int, len(nums))
+	f[0] = 1
+	for i := 1; i < len(nums); i++ {
+		f[i] = 1
+		for j := 0; j < i; j++ {
+			if nums[j] < nums[i] {
+				f[i] = max(f[i], f[j]+1)
+			}
+		}
+	}
+	maxL := 0
+	for i := 0; i < len(nums); i++ {
+		maxL = max(f[i], maxL)
+	}
+	return maxL
+}
+
 func main() {
 	// triangle := [][]int{{1, 3, 1}, {1, 5, 1}, {4, 2, 1}}
 	// res := minPathSum(triangle)
 	// res := uniquePaths(3, 7)
-	res := jump([]int{3, 4, 3, 2, 5, 4, 3})
+	// res := jump([]int{3, 4, 3, 2, 5, 4, 3})
+
+	res := minCut("aabb")
 	fmt.Println("==res==:", res)
 }
