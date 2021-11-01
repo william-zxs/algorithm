@@ -457,6 +457,18 @@ func backPack(m int, A []int) int {
 	return dp[m]
 }
 
+// 344. 反转字符串
+func reverseString(s []byte) {
+	// 1 2 3 4 5   2
+	// 1 2 3 4     2
+	l := len(s)
+	mid := len(s) / 2
+	for i := 0; i < mid; i++ {
+		s[i], s[l-1-i] = s[l-1-i], s[i]
+	}
+	fmt.Println("==s==", s)
+}
+
 func main() {
 	// res := minCut("aabb")
 	// partition("aab")
