@@ -385,14 +385,27 @@ func wordBreak(s string, wordDict []string) bool {
 	return dp[len(s)]
 }
 
-func isInWordDict(s string, wordDict []string) {
-	for word := range wordDict {
-		if word == s {
-			return true
+// 1143. 最长公共子序列
+func longestCommonSubsequence(text1, text2 string) int {
+	m := len(text1)
+	n := len(text2)
+	dp := make([][]int, m+1)
+	for i := range dp {
+		dp[i] = make([]int, n+1)
+	}
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if text1[i] == text2[j] {
+				dp[i+1][j+1] = dp[i][j] + 1
+			} else {
+				dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1])
+			}
 		}
 	}
-	return true
+	return dp[m][n]
 }
+
 func main() {
 	// res := minCut("aabb")
 	// partition("aab")
@@ -400,6 +413,7 @@ func main() {
 	// splits := []string{"a", "b", "c", "d"}
 	// splits = splits[:len(splits)-1]
 
-	res := partition("aab")
+	// res := partition("aab")
+	res := longestCommonSubsequence("abcd", "aefgh")
 	fmt.Println("==res==:", res)
 }
