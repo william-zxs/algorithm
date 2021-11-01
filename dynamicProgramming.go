@@ -406,6 +406,57 @@ func longestCommonSubsequence(text1, text2 string) int {
 	return dp[m][n]
 }
 
+// 72. 编辑距离
+
+// 322. 零钱兑换
+func coinChange(coins []int, amount int) int {
+	// 越大越少
+	// a*n1 +b*n2 + c*n3 = amount
+	// min(n1+n2+n3)
+	// f(i) = f(i-coins[j]) + 1
+	dp := make([]int, amount+1)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = amount + 1
+	}
+	// 边界值
+	dp[0] = 0
+	for i := 1; i <= amount; i++ {
+		for j := 0; j < len(coins); j++ {
+			if i >= coins[j] {
+				dp[i] = min(dp[i], dp[i-coins[j]]+1)
+			}
+		}
+	}
+	if dp[amount] > amount {
+		return -1
+	}
+	return dp[amount]
+}
+
+// 92 · 背包问题
+//https://www.lintcode.com/problem/92/
+/*
+在n个物品中挑选若干物品装入背包，最多能装多满？假设背包的大小为m，每个物品的大小为A[i]
+*/
+func backPack(m int, A []int) int {
+	// 和322. 零钱兑换类似
+	/*
+		f(m) = f(m-A[i]) + A[i]
+	*/
+	dp := make([]int, m+1)
+	for i := 1; i <= m; i++ {
+		items := A
+		for j := 0; j < len(A); j++ {
+			if i >= items[j] {
+				dp[i] = max(dp[i-items[j]]+items[j], dp[i])
+				items[j] = 0
+			}
+		}
+	}
+	fmt.Println("==dp==:", dp)
+	return dp[m]
+}
+
 func main() {
 	// res := minCut("aabb")
 	// partition("aab")
@@ -414,6 +465,8 @@ func main() {
 	// splits = splits[:len(splits)-1]
 
 	// res := partition("aab")
-	res := longestCommonSubsequence("abcd", "aefgh")
+	// res := longestCommonSubsequence("abcd", "aefgh")
+	data := []int{3, 4, 8, 5}
+	res := backPack(10, data)
 	fmt.Println("==res==:", res)
 }
