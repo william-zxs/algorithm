@@ -164,8 +164,25 @@ func findAnagrams(s string, p string) []int {
 	return res
 }
 
+// 3. 无重复字符的最长子串
+func lengthOfLongestSubstring(s string) int {
+	// if len(s) == 0 {
+	// 	return 0
+	// }
+	// maxL := 1
+	// current := make(map[byte]int, 0)
+	// for i, l := 0, 0; i < len(s); i++ {
+	// 	if current[s[i]] == 0 {
+
+	// 	}
+	// }
+	return 0
+}
+
 func main() {
 	// res := minWindow("ADOBECODEBANC", "ABC")
-	res := findAnagrams("abab", "ab")
-	fmt.Println("==res==:", res)
+	// res := findAnagrams("abab", "ab")
+	// fmt.Println("==res==:", res)
+	res := make(map[int]int, 0)
+	fmt.Println(res[10])
 }
