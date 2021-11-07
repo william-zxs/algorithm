@@ -110,8 +110,62 @@ func checkInclusion(s1 string, s2 string) bool {
 	return false
 }
 
+// 438. 找到字符串中所有字母异位词
+func findAnagrams(s string, p string) []int {
+	if len(s) < len(p) {
+		return []int{}
+	}
+
+	targetMap := make(map[byte]int, 0)
+	currentMap := make(map[byte]int, 0)
+	matchCount := 0
+	res := make([]int, 0)
+
+	for i := 0; i < len(p); i++ {
+		targetMap[p[i]]++
+		currentMap[s[i]]++
+	}
+	for k, v := range targetMap {
+		if currentMap[k] == v {
+			matchCount++
+		}
+	}
+	if len(targetMap) == matchCount {
+		res = append(res, 0)
+	}
+
+	//滑动窗口
+	for r := len(p); r < len(s); r++ {
+
+		//左边
+		if targetMap[s[r-len(p)]] > 0 {
+			currentMap[s[r-len(p)]]--
+			if currentMap[s[r-len(p)]] == targetMap[s[r-len(p)]] {
+				matchCount++
+			} else if currentMap[s[r-len(p)]] == targetMap[s[r-len(p)]]-1 {
+				matchCount--
+			}
+		}
+
+		//右边
+		if targetMap[s[r]] > 0 {
+			currentMap[s[r]]++
+			if currentMap[s[r]] == targetMap[s[r]] {
+				matchCount++
+			} else if currentMap[s[r]] == targetMap[s[r]]+1 {
+				matchCount--
+			}
+		}
+		if len(targetMap) == matchCount {
+			res = append(res, r-len(p)+1)
+		}
+	}
+
+	return res
+}
+
 func main() {
 	// res := minWindow("ADOBECODEBANC", "ABC")
-	res := checkInclusion("adc", "dcda")
+	res := findAnagrams("abab", "ab")
 	fmt.Println("==res==:", res)
 }
