@@ -57,7 +57,61 @@ func minWindow(s string, t string) string {
 	return s[sL:sR]
 }
 
+// 567. 字符串的排列
+func checkInclusion(s1 string, s2 string) bool {
+	targetMap := make(map[byte]int, 0)
+	currentMap := make(map[byte]int, 0)
+	matchCount := 0
+
+	if len(s1) > len(s2) {
+		return false
+	}
+
+	for i := 0; i < len(s1); i++ {
+		targetMap[s1[i]]++
+		currentMap[s2[i]]++
+	}
+	for k, v := range targetMap {
+		if currentMap[k] == v {
+			matchCount++
+		}
+	}
+	if len(targetMap) == matchCount {
+		return true
+	}
+
+	//滑动窗口
+	for r := len(s1); r < len(s2); r++ {
+
+		//左边
+		if targetMap[s2[r-len(s1)]] > 0 {
+			currentMap[s2[r-len(s1)]]--
+			if currentMap[s2[r-len(s1)]] == targetMap[s2[r-len(s1)]] {
+				matchCount++
+			} else if currentMap[s2[r-len(s1)]] == targetMap[s2[r-len(s1)]]-1 {
+				matchCount--
+			}
+		}
+
+		//右边
+		if targetMap[s2[r]] > 0 {
+			currentMap[s2[r]]++
+			if currentMap[s2[r]] == targetMap[s2[r]] {
+				matchCount++
+			} else if currentMap[s2[r]] == targetMap[s2[r]]+1 {
+				matchCount--
+			}
+		}
+		if len(targetMap) == matchCount {
+			return true
+		}
+	}
+
+	return false
+}
+
 func main() {
-	res := minWindow("ADOBECODEBANC", "ABC")
+	// res := minWindow("ADOBECODEBANC", "ABC")
+	res := checkInclusion("adc", "dcda")
 	fmt.Println("==res==:", res)
 }
