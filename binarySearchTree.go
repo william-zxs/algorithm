@@ -110,6 +110,32 @@ func helper(root *TreeNode, lower, upper int) bool {
 	return helper(root.Left, lower, root.Val) && helper(root.Right, root.Val, upper)
 }
 
+// 701. 二叉搜索树中的插入操作
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{Val: val}
+	}
+	p := root
+	for p != nil {
+		if val < p.Val {
+
+			if p.Left == nil {
+				p.Left = &TreeNode{Val: val}
+				return root
+			}
+			p = p.Left
+		} else {
+
+			if p.Right == nil {
+				p.Right = &TreeNode{Val: val}
+				return root
+			}
+			p = p.Right
+		}
+	}
+	return root
+}
+
 func main() {
 
 	// [5,1,4,null,null,3,6]
