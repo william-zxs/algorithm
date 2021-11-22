@@ -136,6 +136,33 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 	return root
 }
 
+// 450. 删除二叉搜索树中的节点
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	if root == nil {
+		return root
+	}
+	if root.Val > key {
+		root.Left = deleteNode(root.Left, key)
+	} else if root.Val < key {
+		root.Right = deleteNode(root.Right, key)
+	} else {
+		if root.Left == nil {
+			return root.Right
+		} else if root.Right == nil {
+			return root.Left
+		} else {
+			//左右都有子节点的情况，把左节点移动到右节点的最后一个左子节点下
+			cur := root.Right
+			for cur.Left != nil {
+				cur = cur.Left
+			}
+			cur.Left = root.Left
+			return root.Right
+		}
+	}
+	return root
+}
+
 func main() {
 
 	// [5,1,4,null,null,3,6]
