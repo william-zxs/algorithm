@@ -163,6 +163,41 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 	return root
 }
 
+//110. 平衡二叉树
+/*
+给定一个二叉树，判断它是否是高度平衡的二叉树。
+本题中，一棵高度平衡二叉树定义为：
+一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1 。
+*/
+func isBalanced(root *TreeNode) bool {
+	//递归 计算深度
+	if root == nil {
+		return true
+	}
+	res := isBalancedHelper(root)
+	if res == -1 {
+		return false
+	} else {
+		return true
+	}
+}
+
+func isBalancedHelper(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left := isBalancedHelper(root.Left)
+	right := isBalancedHelper(root.Right)
+	if right-left > 1 || left-right > 1 || left == -1 || right == -1 {
+		return -1
+	}
+	if left > right {
+		return left + 1
+	} else {
+		return right + 1
+	}
+}
+
 func main() {
 
 	// [5,1,4,null,null,3,6]
@@ -226,9 +261,6 @@ func main() {
 	// 	Right: nil,
 	// }
 
-	// res := isValidBST(node1)
-	res := node1
-	fmt.Println("==res1==:", res)
-	res := node2
-	fmt.Println("==res2==:", res)
+	res := isValidBST(node1)
+	fmt.Println("==res==:", res)
 }
