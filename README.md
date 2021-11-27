@@ -35,7 +35,7 @@ algorithm practice
 
 
 ## golang
-slice作为参数传递给函数
+slice作为参数传递给函数，是值传递，里面的是值的地址拷贝，修改slice中的值是可以生效的，如果添加值，则不会影响到外部slice
 
 
 * slice的头部插入、指定位置的插入
