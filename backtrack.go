@@ -86,6 +86,38 @@ out:
 	}
 }
 
+// 47. 全排列 II
+func permuteUnique(nums []int) [][]int {
+	result := make([][]int, 0)
+	list := make([]int, 0)
+	visited := make([]bool, len(nums))
+	sort.Ints(nums)
+	backtrackPermuteUnique(nums, list, &result, visited)
+	return result
+}
+func backtrackPermuteUnique(nums []int, list []int, result *[][]int, visited []bool) {
+	if len(list) == len(nums) {
+		data := make([]int, len(list))
+		copy(data, list)
+		*result = append(*result, data)
+		return
+	}
+
+	for i := 0; i < len(nums); i++ {
+		if visited[i] {
+			continue
+		}
+		if i != 0 && nums[i] == nums[i-1] && !visited[i-1] {
+			continue
+		}
+		list = append(list, nums[i])
+		visited[i] = true
+		backtrackPermuteUnique(nums, list, result, visited)
+		visited[i] = false
+		list = list[:len(list)-1]
+	}
+}
+
 func main() {
 
 	data := []int{1, 2, 3}
