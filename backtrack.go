@@ -7,6 +7,12 @@ import (
 
 /*
 回溯算法
+
+参考：
+	https://zhuanlan.zhihu.com/p/93530380
+	labuladong
+
+	https://greyireland.gitbook.io/algorithm-pattern/suan-fa-si-wei/backtrack
 */
 
 // 78. 子集
@@ -116,6 +122,45 @@ func backtrackPermuteUnique(nums []int, list []int, result *[][]int, visited []b
 		visited[i] = false
 		list = list[:len(list)-1]
 	}
+}
+
+func combinationSum(candidates []int, target int) [][]int {
+	list := make([]int, 0)
+	result := make([][]int, 0)
+	sort.Ints(candidates)
+	combinationSumHelper(candidates, list, &result, target)
+	return result
+}
+
+//39. 组合总和
+func combinationSumHelper(candidates []int, list []int, result *[][]int, target int) {
+	sumVal := sumList(list)
+	if sumVal == target {
+		data := make([]int, len(list))
+		copy(data, list)
+		*result = append(*result, data)
+		return
+	} else if sumVal > target {
+		return
+	}
+
+	for i := 0; i < len(candidates); i++ {
+		if len(list) > 0 && list[len(list)-1] > candidates[i] {
+			continue
+		}
+		list = append(list, candidates[i])
+		combinationSumHelper(candidates, list, result, target)
+		list = list[:len(list)-1]
+	}
+
+}
+
+func sumList(list []int) int {
+	sumVal := 0
+	for i := 0; i < len(list); i++ {
+		sumVal += list[i]
+	}
+	return sumVal
 }
 
 func main() {
