@@ -163,6 +163,47 @@ func sumList(list []int) int {
 	return sumVal
 }
 
+// 17. 电话号码的字母组合
+func letterCombinations(digits string) []string {
+	result := make([]string, 0)
+	path := make([]byte, 0)
+	if len(digits) == 0 {
+		return result
+	}
+
+	dataMap := map[string]string{
+		"2": "abc",
+		"3": "def",
+		"4": "ghi",
+		"5": "jkl",
+		"6": "mno",
+		"7": "pqrs",
+		"8": "tuv",
+		"9": "wxyz",
+	}
+
+	letterCombinationsHelper(&result, path, digits, 0, dataMap)
+	return result
+}
+
+func letterCombinationsHelper(result *[]string, path []byte, digits string, pos int, dataMap map[string]string) {
+	if len(path) == len(digits) {
+		data := make([]byte, len(path))
+		copy(data, path)
+		*result = append(*result, string(data))
+		return
+	}
+
+	numStr := string(digits[pos])
+	if str, ok := dataMap[numStr]; ok {
+		for y := 0; y < len(str); y++ {
+			path = append(path, str[y])
+			letterCombinationsHelper(result, path, digits, pos+1, dataMap)
+			path = path[:len(path)-1]
+		}
+	}
+}
+
 func main() {
 
 	data := []int{1, 2, 3}
