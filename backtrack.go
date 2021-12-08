@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -249,6 +251,54 @@ func partition(s string) [][]string {
 	}
 	partitionHelper(0)
 	return result
+}
+
+func restoreIpAddresses(s string) []string {
+	result := make([]string, 0)
+	list := make([]string, 0)
+	restoreIpAddressesHelper(s, 0, list, &result)
+	return result
+}
+
+func restoreIpAddressesHelper(s string, pos int, list []string, result *[]string) {
+
+	if len(list) == 4 {
+		if pos == len(s) {
+			for i := 0; i < 4; i++ {
+				if !checkLegal(list[i]) {
+					return
+				}
+			}
+			*result = append(*result, strings.Join(list, "."))
+		}
+		return
+	}
+	for i := pos; i < len(s); i++ {
+		list = append(list, s[pos:i+1])
+		restoreIpAddressesHelper(s, i+1, list, result)
+		list = list[:len(list)-1]
+	}
+}
+
+func checkLegal(subS string) bool {
+	if len(subS) == 0 {
+		return false
+	}
+	if len(subS) > 1 && string(subS[0]) == "0" {
+		return false
+	}
+
+	num, error := strconv.Atoi(subS)
+	if error == nil {
+		if num >= 0 && num <= 255 {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		return false
+	}
+
 }
 
 func main() {
