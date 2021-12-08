@@ -204,9 +204,56 @@ func letterCombinationsHelper(result *[]string, path []byte, digits string, pos 
 	}
 }
 
+// 131. 分割回文串
+func partition(s string) [][]string {
+	l := len(s)
+	pd := make([][]bool, l)
+
+	result := make([][]string, 0)
+
+	//预处理
+	for i := 0; i < l; i++ {
+		inpd := make([]bool, l)
+		for y := 0; y < l; y++ {
+			inpd[y] = true
+		}
+		pd[i] = inpd
+	}
+
+	for i := l - 1; i >= 0; i-- {
+		for j := i + 1; j < l; j++ {
+			pd[i][j] = s[i] == s[j] && pd[i+1][j-1]
+		}
+	}
+
+	// 路径
+	list := make([]string, 0)
+	//回溯 递归
+	var partitionHelper func(i int)
+	partitionHelper = func(i int) {
+		if i == l {
+			num := len(list)
+			list2 := make([]string, num)
+			copy(list2, list)
+			result = append(result, list2)
+			return
+		}
+
+		for j := i; j < l; j++ {
+			if pd[i][j] {
+				list = append(list, s[i:j+1])
+				partitionHelper(j + 1)
+				list = list[:len(list)-1]
+			}
+		}
+	}
+	partitionHelper(0)
+	return result
+}
+
 func main() {
 
-	data := []int{1, 2, 3}
-	res := permute(data)
+	data := "aab"
+	res := partition(data)
 	fmt.Println("==res==", res)
 }
