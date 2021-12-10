@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 // 28. 实现 strStr()
 func strStr(haystack string, needle string) int {
 	if len(needle) == 0 {
@@ -17,4 +19,26 @@ func strStr(haystack string, needle string) int {
 		}
 	}
 	return -1
+}
+
+//78. 子集
+func subsets(nums []int) [][]int {
+	sort.Ints(nums)
+	result := make([][]int, 0)
+	list := make([]int, 0)
+	subsetsHelper(0, nums, list, &result)
+	return result
+}
+
+func subsetsHelper(pos int, nums []int, list []int, result *[][]int) {
+
+	data := make([]int, len(list))
+	copy(data, list)
+	*result = append(*result, data)
+
+	for i := pos; i < len(nums); i++ {
+		list = append(list, nums[i])
+		subsetsHelper(i+1, nums, list, result)
+		list = list[:len(list)-1]
+	}
 }
