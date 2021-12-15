@@ -2,6 +2,12 @@ package main
 
 import "sort"
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 // 28. 实现 strStr()
 func strStr(haystack string, needle string) int {
 	if len(needle) == 0 {
@@ -41,4 +47,54 @@ func subsetsHelper(pos int, nums []int, list []int, result *[][]int) {
 		subsetsHelper(i+1, nums, list, result)
 		list = list[:len(list)-1]
 	}
+}
+
+// 104. 二叉树的最大深度
+func maxDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return maxDepthHelper(root)
+}
+
+func maxDepthHelper(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	left := maxDepthHelper(root.Left)
+	right := maxDepthHelper(root.Right)
+	if left > right {
+		return left + 1
+	}
+	return right + 1
+}
+
+// 110. 平衡二叉树
+func isBalanced(root *TreeNode) bool {
+	//分治法
+	if root == nil {
+		return true
+	}
+	_, b := isBalancedHelper(root)
+	return b
+}
+
+func isBalancedHelper(root *TreeNode) (int, bool) {
+	if root == nil {
+		return 0, true
+	}
+	leftD, leftB := isBalancedHelper(root.Left)
+	rightD, rightB := isBalancedHelper(root.Right)
+	if !leftB || !rightB {
+		return 0, false
+	}
+	if leftD-rightD > 1 || rightD-leftD > 1 {
+		return 0, false
+	}
+
+	if leftD > rightD {
+		return leftD + 1, true
+	}
+	return rightD + 1, true
+
 }
