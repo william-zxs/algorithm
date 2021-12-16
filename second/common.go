@@ -98,3 +98,31 @@ func isBalancedHelper(root *TreeNode) (int, bool) {
 	return rightD + 1, true
 
 }
+
+// 124. 二叉树中的最大路径和
+func maxPathSum(root *TreeNode) int {
+	//贡献值的做法
+	maxSum := root.Val
+
+	var maxGain func(root *TreeNode) int
+	maxGain = func(root *TreeNode) int {
+		if root == nil {
+			return 0
+		}
+		leftGain := max(maxGain(root.Left), 0)
+		rightGain := max(maxGain(root.Right), 0)
+
+		maxSum = max(leftGain+rightGain+root.Val, maxSum)
+
+		return max(leftGain, rightGain) + root.Val
+	}
+	maxGain(root)
+	return maxSum
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
