@@ -99,6 +99,42 @@ func isBalancedHelper(root *TreeNode) (int, bool) {
 
 }
 
+// 236. 二叉树的最近公共祖先
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	_, node := helper(root, p, q, 0)
+	return node
+}
+
+func helper(root, p, q *TreeNode, count int) (int, *TreeNode) {
+	if root == nil {
+		return 0, nil
+	}
+
+	left, leftNode := helper(root.Left, p, q, count)
+	right, rightNode := helper(root.Right, p, q, count)
+	if left == 2 {
+		return 2, leftNode
+	}
+	if right == 2 {
+		return 2, rightNode
+	}
+
+	count = 0
+	if root == p || root == q {
+		count += 1
+	}
+	if left == 1 {
+		count += 1
+	}
+	if right == 1 {
+		count += 1
+	}
+	if count == 2 {
+		return count, root
+	}
+	return count, nil
+}
+
 // 124. 二叉树中的最大路径和
 func maxPathSum(root *TreeNode) int {
 	//贡献值的做法
@@ -125,4 +161,33 @@ func max(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// 102. 二叉树的层序遍历
+func levelOrder(root *TreeNode) [][]int {
+
+	levelList := make([]*TreeNode, 0)
+	result := make([][]int, 0)
+	if root == nil {
+		return result
+	}
+	levelList = append(levelList, root)
+
+	for len(levelList) > 0 {
+		data := make([]int, 0)
+		l := len(levelList)
+		for i := 0; i < l; i++ {
+			node := levelList[i]
+			data = append(data, node.Val)
+			if node.Left != nil {
+				levelList = append(levelList, node.Left)
+			}
+			if node.Right != nil {
+				levelList = append(levelList, node.Right)
+			}
+		}
+		result = append(result, data)
+		levelList = levelList[l:]
+	}
+	return result
 }
