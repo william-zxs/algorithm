@@ -191,3 +191,34 @@ func levelOrder(root *TreeNode) [][]int {
 	}
 	return result
 }
+
+// 107. 二叉树的层序遍历 II
+func levelOrderBottom(root *TreeNode) [][]int {
+
+	result := make([][]int, 0)
+	levelStack := make([]*TreeNode, 0)
+	if root == nil {
+		return result
+	}
+	levelStack = append(levelStack, root)
+	for len(levelStack) > 0 {
+		l := len(levelStack)
+		data := make([]int, 0)
+		for i := 0; i < l; i++ {
+			node := levelStack[i]
+			data = append(data, node.Val)
+			if node.Left != nil {
+				levelStack = append(levelStack, node.Left)
+			}
+			if node.Right != nil {
+				levelStack = append(levelStack, node.Right)
+			}
+		}
+		levelStack = levelStack[l:]
+		result = append(result, data)
+	}
+	for i := 0; i < len(result)/2; i++ {
+		result[i], result[len(result)-i-1] = result[len(result)-i-1], result[i]
+	}
+	return result
+}
