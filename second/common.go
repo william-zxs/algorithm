@@ -222,3 +222,43 @@ func levelOrderBottom(root *TreeNode) [][]int {
 	}
 	return result
 }
+
+//103. 二叉树的锯齿形层序遍历
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	result := make([][]int, 0)
+	if root == nil {
+		return result
+	}
+	stack := make([]*TreeNode, 0)
+	stack = append(stack, root)
+	i := 0
+	for len(stack) > 0 {
+		l := len(stack)
+		data := make([]int, 0)
+		for i := 0; i < l; i++ {
+			node := stack[i]
+			if node.Left != nil {
+				stack = append(stack, node.Left)
+			}
+			if node.Right != nil {
+				stack = append(stack, node.Right)
+			}
+			data = append(data, node.Val)
+		}
+
+		if i%2 != 0 {
+			reverseSlice(data)
+		}
+		result = append(result, data)
+		stack = stack[l:]
+		i++
+	}
+	return result
+}
+
+func reverseSlice(data []int) []int {
+	for i, j := 0, len(data)-1; i < j; i, j = i+1, j-1 {
+		data[i], data[j] = data[j], data[i]
+	}
+	return data
+}
