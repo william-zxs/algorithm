@@ -262,3 +262,79 @@ func reverseSlice(data []int) []int {
 	}
 	return data
 }
+
+// 98. 验证二叉搜索树
+/*
+二叉搜索树  的中序遍历是递增的
+还可以用分治法。
+*/
+func isValidBST(root *TreeNode) bool {
+	result := make([]int, 0)
+	stack := make([]*TreeNode, 0)
+	for root != nil {
+		stack = append(stack, root)
+		root = root.Left
+	}
+	for len(stack) > 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		result = append(result, node.Val)
+		if node.Right != nil {
+			node = node.Right
+			for node != nil {
+				stack = append(stack, node)
+				node = node.Left
+			}
+		}
+	}
+	for i := 0; i < len(result)-1; i++ {
+		if result[i] >= result[i+1] {
+			return false
+		}
+	}
+	return true
+}
+
+//DFS 分治法
+func isValidBST2(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	isTrue, _, _ := doWorkIsValidBST2(root)
+	if isTrue {
+		return true
+	}
+	return false
+}
+
+func doWorkIsValidBST2(root *TreeNode) (bool, int, int) {
+	if root.Left != nil && root.Right != nil {
+		isLeft, leftMin, leftMax := doWorkIsValidBST2(root.Left)
+		isRight, rightMin, rightMax := doWorkIsValidBST2(root.Right)
+		if isLeft && isRight && root.Val > leftMax && root.Val < rightMin {
+			return true, leftMin, rightMax
+		} else {
+			return false, 0, 0
+		}
+	}
+
+	if root.Left != nil {
+		isLeft, leftMin, leftMax := doWorkIsValidBST2(root.Left)
+		if isLeft && root.Val > leftMax {
+			return true, leftMin, root.Val
+		} else {
+			return false, 0, 0
+		}
+	}
+	if root.Right != nil {
+		isRight, rightMin, rightMax := doWorkIsValidBST2(root.Right)
+		if isRight && root.Val < rightMin {
+			return true, root.Val, rightMax
+		} else {
+			return false, 0, 0
+		}
+	}
+
+	return true, root.Val, root.Val
+
+}
