@@ -425,3 +425,76 @@ func deleteDuplicates2(head *ListNode) *ListNode {
 
 	return node.Next
 }
+
+// 92. 反转链表 II
+func reverseBetween(head *ListNode, left int, right int) *ListNode {
+	if left == right {
+		return head
+	}
+
+	var pre *ListNode
+	i := 0
+
+	var firstHead *ListNode
+	var secondHead *ListNode
+	var thirdHead *ListNode
+	var finalHead *ListNode
+
+	firstHead = head
+	for head != nil {
+		i++
+		if i == left {
+			secondHead = head
+			if pre == nil {
+				firstHead = nil
+			} else {
+				pre.Next = nil
+			}
+		}
+		if i == right {
+			if head.Next == nil {
+				thirdHead = nil
+			} else {
+				thirdHead = head.Next
+			}
+			head.Next = nil
+		}
+		pre = head
+		head = head.Next
+	}
+	reSecondHead := reverseList(secondHead)
+
+	if firstHead == nil {
+		finalHead = reSecondHead
+	} else {
+		finalHead = firstHead
+		for firstHead != nil && firstHead.Next != nil {
+			firstHead = firstHead.Next
+		}
+		firstHead.Next = reSecondHead
+	}
+
+	for reSecondHead != nil && reSecondHead.Next != nil {
+		reSecondHead = reSecondHead.Next
+	}
+	reSecondHead.Next = thirdHead
+	return finalHead
+}
+
+// 206. 反转链表
+func reverseList(head *ListNode) *ListNode {
+	dummy := &ListNode{Val: 0}
+	var pre *ListNode
+	for head != nil {
+		next := head.Next
+		head.Next = pre
+
+		if next == nil {
+			dummy.Next = head
+			break
+		}
+		pre = head
+		head = next
+	}
+	return dummy.Next
+}
