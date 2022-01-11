@@ -2,10 +2,19 @@ package main
 
 import "sort"
 
+/*
+二刷
+*/
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
 	Right *TreeNode
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
 }
 
 // 28. 实现 strStr()
@@ -337,4 +346,82 @@ func doWorkIsValidBST2(root *TreeNode) (bool, int, int) {
 
 	return true, root.Val, root.Val
 
+}
+
+// 701. 二叉搜索树中的插入操作
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{
+			Val: val,
+		}
+	}
+	head := root
+	for root != nil {
+		if root.Val < val {
+			if root.Right == nil {
+				root.Right = &TreeNode{Val: val}
+				return head
+			}
+			root = root.Right
+		}
+		if root.Val > val {
+			if root.Left == nil {
+				root.Left = &TreeNode{Val: val}
+				return head
+			}
+			root = root.Left
+		}
+	}
+
+	return head
+}
+
+// 83. 删除排序链表中的重复元素
+func deleteDuplicates(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	headR := head
+	for head != nil && head.Next != nil {
+		if head.Val == head.Next.Val {
+			head.Next = head.Next.Next
+		} else {
+			head = head.Next
+		}
+
+	}
+	return headR
+
+}
+
+// 82. 删除排序链表中的重复元素 II
+func deleteDuplicates2(head *ListNode) *ListNode {
+
+	if head == nil {
+		return nil
+	}
+
+	dummy := &ListNode{Val: -1000}
+	dummy.Next = head
+	node := dummy
+	dupMap := make(map[int]bool, 0)
+
+	for dummy.Next != nil {
+		if _, ok := dupMap[dummy.Next.Val]; ok {
+			dummy.Next = dummy.Next.Next
+			continue
+		}
+
+		if dummy.Next.Next != nil {
+			if dummy.Next.Val == dummy.Next.Next.Val {
+				dupMap[dummy.Next.Val] = true
+				dummy.Next = dummy.Next.Next
+				continue
+			}
+		}
+		dummy = dummy.Next
+
+	}
+
+	return node.Next
 }
