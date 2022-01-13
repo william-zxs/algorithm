@@ -612,3 +612,39 @@ func mergeNodeList(left *ListNode, right *ListNode) *ListNode {
 	}
 	return head.Next
 }
+
+// 143. 重排链表
+func reorderList(head *ListNode) {
+	//分成两部分
+	slow := head
+	fast := head.Next
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+	}
+	right := slow.Next
+	left := head
+	slow.Next = nil
+	//第二部分反转
+	var pre *ListNode
+	var reRight *ListNode
+	for right != nil {
+		next := right.Next
+		if next == nil {
+			reRight = right
+		}
+		right.Next = pre
+		pre = right
+		right = next
+
+	}
+	//合并两部分
+	for left != nil && reRight != nil {
+		leftNext := left.Next
+		rightNext := reRight.Next
+		left.Next = reRight
+		reRight.Next = leftNext
+		left = leftNext
+		reRight = rightNext
+	}
+}
