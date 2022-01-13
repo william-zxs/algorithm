@@ -498,3 +498,117 @@ func reverseList(head *ListNode) *ListNode {
 	}
 	return dummy.Next
 }
+
+// 21. 合并两个有序链表
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	dummy := &ListNode{Val: 0}
+	resHead := dummy
+	for list1 != nil && list2 != nil {
+		if list1.Val <= list2.Val {
+			dummy.Next = list1
+			list1 = list1.Next
+		} else {
+			dummy.Next = list2
+			list2 = list2.Next
+		}
+		dummy = dummy.Next
+	}
+
+	if list1 == nil {
+		dummy.Next = list2
+	} else {
+		dummy.Next = list1
+	}
+	return resHead.Next
+}
+
+// 86. 分隔链表
+func partition(head *ListNode, x int) *ListNode {
+	left := &ListNode{Val: 0}
+	right := &ListNode{Val: 0}
+	rightHead := right
+	leftHead := left
+	for head != nil {
+		next := head.Next
+		head.Next = nil
+		if head.Val < x {
+			left.Next = head
+			left = left.Next
+		} else {
+			right.Next = head
+			right = right.Next
+		}
+		head = next
+	}
+	left.Next = rightHead.Next
+	return leftHead.Next
+}
+
+func sortList(head *ListNode) *ListNode {
+	return mergeSort(head)
+}
+
+//归并
+func mergeSort(head *ListNode) *ListNode {
+	//判断终止条件
+	if head == nil || head.Next == nil {
+		return head
+	}
+	//找到中点
+	rightHead := findMiddle(head)
+	leftHead := head
+	//分两部分递归
+	leftOrderHead := mergeSort(leftHead)
+	rightOrderHead := mergeSort(rightHead)
+	//将两个有序链表合并为一个有序链表
+	head = mergeNodeList(leftOrderHead, rightOrderHead)
+	//返回该链表
+	return head
+}
+
+func findMiddle(head *ListNode) *ListNode {
+	//快慢指针的方式找到中间的node
+	slow := head
+	fast := head.Next
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	rightHead := slow.Next
+	slow.Next = nil
+	return rightHead
+}
+
+//148. 排序链表
+/*
+	使用归并排序来计算，其实是一个排序，其他排序也都可以
+*/
+func mergeNodeList(left *ListNode, right *ListNode) *ListNode {
+	if left == nil {
+		return right
+	}
+	if right == nil {
+		return left
+	}
+
+	dummy := &ListNode{Val: 0}
+	head := dummy
+	for left != nil && right != nil {
+		if left.Val <= right.Val {
+			dummy.Next = left
+			left = left.Next
+		} else {
+			dummy.Next = right
+			right = right.Next
+		}
+		dummy = dummy.Next
+	}
+
+	if left == nil {
+		dummy.Next = right
+	}
+	if right == nil {
+		dummy.Next = left
+	}
+	return head.Next
+}
