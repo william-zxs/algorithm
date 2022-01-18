@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"sort"
+	"strconv"
+)
 
 /*
 二刷
@@ -801,4 +804,31 @@ func (this *MinStack) Top() int {
 
 func (this *MinStack) GetMin() int {
 	return this.minStack[len(this.minStack)-1]
+}
+
+// 150. 逆波兰表达式求值
+func evalRPN(tokens []string) int {
+	stack := make([]int, 0)
+	for i := 0; i < len(tokens); i++ {
+		item := tokens[i]
+		num, err := strconv.Atoi(item)
+		if err == nil {
+			stack = append(stack, num)
+		} else {
+			var val int
+			switch item {
+			case "+":
+				val = stack[len(stack)-1] + stack[len(stack)-2]
+			case "-":
+				val = stack[len(stack)-2] - stack[len(stack)-1]
+			case "*":
+				val = stack[len(stack)-2] * stack[len(stack)-1]
+			case "/":
+				val = stack[len(stack)-2] / stack[len(stack)-1]
+			}
+			stack = stack[:len(stack)-2]
+			stack = append(stack, val)
+		}
+	}
+	return stack[0]
 }
