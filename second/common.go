@@ -6,6 +6,12 @@ import "sort"
 二刷
 */
 
+/*
+141
+142
+138
+*/
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -647,4 +653,106 @@ func reorderList(head *ListNode) {
 		left = leftNext
 		reRight = rightNext
 	}
+}
+
+// 141. 环形链表 *
+func hasCycle(head *ListNode) bool {
+	if head == nil {
+		return false
+	}
+	slow := head
+	fast := head.Next
+	for slow != fast {
+		if fast == nil || fast.Next == nil {
+			return false
+		}
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	return true
+}
+
+// 142. 环形链表 II
+func detectCycle(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return nil
+	}
+	s := head
+	f := head
+
+	s = s.Next
+	f = f.Next.Next
+	for s != f {
+		if f == nil || f.Next == nil {
+			return nil
+		}
+		s = s.Next
+		f = f.Next.Next
+	}
+	f = head
+	for s != f {
+		s = s.Next
+		f = f.Next
+	}
+	return s
+
+}
+
+// 234. 回文链表
+func isPalindrome(head *ListNode) bool {
+	if head == nil {
+		return false
+	}
+
+	list := make([]int, 0)
+	for head != nil {
+		list = append(list, head.Val)
+		head = head.Next
+	}
+	for i, j := 0, len(list)-1; i < len(list)/2; i, j = i+1, j-1 {
+		if list[i] != list[j] {
+			return false
+		}
+	}
+	return true
+}
+
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+// 138. 复制带随机指针的链表
+func copyRandomList(head *Node) *Node {
+
+	if head == nil {
+		return nil
+	}
+
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = &Node{Val: cur.Val, Next: next}
+		cur = next
+	}
+
+	cur = head
+	for cur != nil {
+		if cur.Random == nil {
+			cur.Next.Random = nil
+		} else {
+			cur.Next.Random = cur.Random.Next
+		}
+		cur = cur.Next.Next
+	}
+
+	copyHead := head.Next
+	cur = head
+	for cur != nil && cur.Next != nil {
+		next := cur.Next
+		cur.Next = cur.Next.Next
+		cur = next
+	}
+	return copyHead
 }
