@@ -3,6 +3,7 @@ package main
 import (
 	"sort"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -13,6 +14,7 @@ import (
 141
 142
 138
+394. 字符串解码
 */
 
 type TreeNode struct {
@@ -831,4 +833,59 @@ func evalRPN(tokens []string) int {
 		}
 	}
 	return stack[0]
+}
+
+// 394. 字符串解码
+func decodeString(s string) string {
+	numStack := make([]int, 0)
+	strStack := make([]string, 0)
+
+	var subStr string
+	var subNum int
+	for i := 0; i < len(s); i++ {
+		if s[i] == '[' {
+			numStack = append(numStack, subNum)
+			strStack = append(strStack, subStr)
+			subStr = ""
+			subNum = 0
+		} else if s[i] == ']' {
+			popNum := numStack[len(numStack)-1]
+			numStack = numStack[:len(numStack)-1]
+			popStr := strStack[len(strStack)-1]
+			strStack = strStack[:len(strStack)-1]
+			repeatSubS := strings.Repeat(subStr, popNum)
+			subStr = popStr + repeatSubS
+		} else if s[i] >= '0' && s[i] <= '9' {
+			num, _ := strconv.Atoi(string(s[i]))
+			subNum = subNum*10 + num
+		} else {
+			subStr += string(s[i])
+		}
+
+	}
+
+	return subStr
+}
+
+// 94. 二叉树的中序遍历  * 基础  栈和递归的方式都要熟练，官方的答案比较简洁
+func inorderTraversal(root *TreeNode) []int {
+	stack := make([]*TreeNode, 0)
+	result := make([]int, 0)
+	for root != nil {
+		stack = append(stack, root)
+		root = root.Left
+	}
+	for len(stack) > 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		result = append(result, node.Val)
+		if node.Right != nil {
+			subNode := node.Right
+			for subNode != nil {
+				stack = append(stack, subNode)
+				subNode = subNode.Left
+			}
+		}
+	}
+	return result
 }
