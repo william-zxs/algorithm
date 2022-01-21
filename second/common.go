@@ -889,3 +889,57 @@ func inorderTraversal(root *TreeNode) []int {
 	}
 	return result
 }
+
+type Node struct {
+	Val       int
+	Neighbors []*Node
+}
+
+// 133. 克隆图
+func cloneGraph(node *Node) *Node {
+	//BFS的方式
+
+	if node == nil {
+		return nil
+	}
+	nodeMap := make(map[*Node]*Node, 0)
+	nodeMap[node] = &Node{Val: node.Val}
+	stack := []*Node{node}
+	for len(stack) > 0 {
+		n := stack[0]
+		stack = stack[1:]
+		for _, neighbor := range n.Neighbors {
+			if _, ok := nodeMap[neighbor]; !ok {
+				nodeMap[neighbor] = &Node{Val: neighbor.Val}
+				stack = append(stack, neighbor)
+			}
+			nodeMap[n].Neighbors = append(nodeMap[n].Neighbors, nodeMap[neighbor])
+		}
+	}
+	return nodeMap[node]
+}
+
+func cloneGraph2(node *Node) *Node {
+	if node == nil {
+		return nil
+	}
+	copyMap := make(map[int]*Node, 0)
+	var helper func(node *Node)
+	helper = func(node *Node) {
+		if _, ok := copyMap[node.Val]; !ok {
+			copyNode := &Node{Val: node.Val}
+			copyMap[node.Val] = copyNode
+			neigList := make([]*Node, 0)
+			if len(node.Neighbors) > 0 {
+				for i := 0; i < len(node.Neighbors); i++ {
+					subNode := node.Neighbors[i]
+					helper(subNode)
+					neigList = append(neigList, copyMap[subNode.Val])
+				}
+			}
+			copyNode.Neighbors = neigList
+		}
+	}
+	helper(node)
+	return copyMap[node.Val]
+}
