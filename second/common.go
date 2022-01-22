@@ -943,3 +943,36 @@ func cloneGraph2(node *Node) *Node {
 	helper(node)
 	return copyMap[node.Val]
 }
+
+// 200. 岛屿数量
+func numIslands(grid [][]byte) int {
+	count := 0
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[0]); j++ {
+			if grid[i][j] == '1' {
+				count++
+				helper(grid, i, j)
+			}
+
+		}
+	}
+	return count
+}
+
+func helper(grid [][]byte, i int, j int) {
+	if !(i < len(grid) && i >= 0) || !(j < len(grid[0]) && j >= 0) {
+		return
+	}
+
+	if grid[i][j] == '1' {
+		grid[i][j] = '2'
+		// 右边
+		helper(grid, i, j+1)
+		// 下边
+		helper(grid, i+1, j)
+		// 左边
+		helper(grid, i, j-1)
+		// 上边
+		helper(grid, i-1, j)
+	}
+}
