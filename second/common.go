@@ -1012,3 +1012,34 @@ func max(a int, b int) int {
 	}
 	return b
 }
+
+// 232. 用栈实现队列
+type MyQueue struct {
+	Data []int
+}
+
+func Constructor() MyQueue {
+	return MyQueue{Data: make([]int, 0)}
+}
+
+func (this *MyQueue) Push(x int) {
+	this.Data = append(this.Data, x)
+}
+
+func (this *MyQueue) Pop() int {
+	num := this.Data[0]
+	this.Data = this.Data[1:len(this.Data)]
+	return num
+}
+
+func (this *MyQueue) Peek() int {
+	num := this.Data[0]
+	return num
+}
+
+func (this *MyQueue) Empty() bool {
+	if len(this.Data) > 0 {
+		return false
+	}
+	return true
+}
