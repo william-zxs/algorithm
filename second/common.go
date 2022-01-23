@@ -15,6 +15,8 @@ import (
 142
 138
 394. 字符串解码
+
+84. 柱状图中最大的矩形 困难
 */
 
 type TreeNode struct {
@@ -975,4 +977,38 @@ func helper(grid [][]byte, i int, j int) {
 		// 上边
 		helper(grid, i-1, j)
 	}
+}
+
+// 84. 柱状图中最大的矩形
+func largestRectangleArea(heights []int) int {
+	if heights == nil {
+		return 0
+	}
+	if len(heights) == 1 {
+		return heights[0]
+	}
+
+	stack := []int{0}
+	heights = append([]int{0}, heights...)
+	heights = append(heights, 0)
+
+	maxArea := 0
+	for i := 1; i < len(heights); i++ {
+		for heights[i] < heights[stack[len(stack)-1]] {
+
+			height := heights[stack[len(stack)-1]]
+			stack = stack[:len(stack)-1]
+			width := i - stack[len(stack)-1] - 1
+			area := height * width
+			maxArea = max(area, maxArea)
+		}
+		stack = append(stack, i)
+	}
+	return maxArea
+}
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
