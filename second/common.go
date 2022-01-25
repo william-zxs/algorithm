@@ -17,6 +17,8 @@ import (
 394. 字符串解码
 
 84. 柱状图中最大的矩形 困难
+
+542. 01 矩阵
 */
 
 type TreeNode struct {
@@ -1042,4 +1044,36 @@ func (this *MyQueue) Empty() bool {
 		return false
 	}
 	return true
+}
+
+// 542. 01 矩阵
+func updateMatrix(mat [][]int) [][]int {
+	//BFS 一般会用到栈
+	stack := make([][]int, 0)
+	for i := 0; i < len(mat); i++ {
+		for j := 0; j < len(mat[0]); j++ {
+			if mat[i][j] == 0 {
+				stack = append(stack, []int{i, j})
+			} else {
+				mat[i][j] = -1
+			}
+		}
+	}
+	xl := len(mat)
+	yl := len(mat[0])
+	mx := []int{-1, 1, 0, 0}
+	my := []int{0, 0, -1, 1}
+	for len(stack) > 0 {
+		point := stack[0]
+		stack = stack[1:]
+		for i := 0; i < 4; i++ {
+			x := point[0] + mx[i]
+			y := point[1] + my[i]
+			if x >= 0 && x < xl && y >= 0 && y < yl && mat[x][y] == -1 {
+				mat[x][y] = mat[point[0]][point[1]] + 1
+				stack = append(stack, []int{x, y})
+			}
+		}
+	}
+	return mat
 }
