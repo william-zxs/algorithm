@@ -19,6 +19,8 @@ import (
 84. 柱状图中最大的矩形 困难
 
 542. 01 矩阵
+136. 只出现一次的数字
+137. 只出现一次的数字 II
 */
 
 type TreeNode struct {
@@ -1076,4 +1078,31 @@ func updateMatrix(mat [][]int) [][]int {
 		}
 	}
 	return mat
+}
+
+/*
+二进制
+*/
+
+// 136. 只出现一次的数字
+func singleNumber(nums []int) int {
+	//异或
+	result := 0
+	for i := 0; i < len(nums); i++ {
+		result ^= nums[i]
+	}
+	return result
+}
+
+// 137. 只出现一次的数字 II
+func singleNumberII(nums []int) int {
+	res := int32(0)
+	for i := 0; i < 32; i++ {
+		sumPosition := int32(0)
+		for _, num := range nums {
+			sumPosition += int32(num) >> i & 1
+		}
+		res = res | ((sumPosition % 3) << i)
+	}
+	return int(res)
 }
