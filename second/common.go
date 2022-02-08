@@ -21,6 +21,7 @@ import (
 542. 01 矩阵
 136. 只出现一次的数字
 137. 只出现一次的数字 II
+260. 只出现一次的数字 III
 */
 
 type TreeNode struct {
@@ -1105,4 +1106,22 @@ func singleNumberII(nums []int) int {
 		res = res | ((sumPosition % 3) << i)
 	}
 	return int(res)
+}
+
+// 260. 只出现一次的数字 III
+func singleNumberIII(nums []int) []int {
+	xorSum := 0
+	for _, num := range nums {
+		xorSum ^= num
+	}
+	splitNum := xorSum & -xorSum
+	lNum, rNum := 0, 0
+	for _, num := range nums {
+		if num&splitNum > 0 {
+			lNum ^= num
+		} else {
+			rNum ^= num
+		}
+	}
+	return []int{lNum, rNum}
 }
