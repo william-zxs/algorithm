@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -22,6 +23,8 @@ import (
 136. 只出现一次的数字
 137. 只出现一次的数字 II
 260. 只出现一次的数字 III
+191. 位1的个数
+338. 比特位计数
 */
 
 type TreeNode struct {
@@ -1124,4 +1127,24 @@ func singleNumberIII(nums []int) []int {
 		}
 	}
 	return []int{lNum, rNum}
+}
+
+//191. 位1的个数
+func hammingWeight(num uint32) (ones int) {
+	//n & (n−1)，其运算结果恰为把 nn 的二进制位中的最低位的 11 变为 00 之后的结果
+	for ; num > 0; num &= num - 1 {
+		ones++
+		fmt.Println("num==", num)
+	}
+	return
+}
+
+//338. 比特位计数
+func countBits(n int) []int {
+	// dp的思想
+	result := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		result[i] = result[i&(i-1)] + 1
+	}
+	return result
 }

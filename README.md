@@ -97,9 +97,14 @@ for _, ch1 := range str {
 2、反引号里面的内容不能转义，可以换行，一般用于SQL语句，html等大段内容，以及正则表达式的使用
 
 3、单引号，一般只能用来包裹一个字节的ASCII码字符，例如：
-var asc byte = ‘a’
+var asc byte = 'a'
 fmt.Println(asc) //输出a的ASCII码值 97
 ```
+
+## 二进制
+n & (n−1)，其运算结果恰为把 nn 的二进制位中的最低位的 11 变为 00 之后的结果
+
+汉明重量、汉明距离
 
 ### TODO
 
