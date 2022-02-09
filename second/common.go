@@ -25,6 +25,7 @@ import (
 260. 只出现一次的数字 III
 191. 位1的个数
 338. 比特位计数
+190. 颠倒二进制位
 */
 
 type TreeNode struct {
@@ -1145,6 +1146,16 @@ func countBits(n int) []int {
 	result := make([]int, n+1)
 	for i := 1; i <= n; i++ {
 		result[i] = result[i&(i-1)] + 1
+	}
+	return result
+}
+
+//190. 颠倒二进制位
+func reverseBits(num uint32) uint32 {
+	result := uint32(0)
+	for i := 0; i < 32; i++ {
+		result = (result << 1) | (num & 1)
+		num = num >> 1
 	}
 	return result
 }
