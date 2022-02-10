@@ -26,6 +26,7 @@ import (
 191. 位1的个数
 338. 比特位计数
 190. 颠倒二进制位
+35. 搜索插入位置
 */
 
 type TreeNode struct {
@@ -1217,4 +1218,20 @@ func binarySearch(A []int, l, r int, target int) []int {
 		return binarySearch(A, l, mid, target)
 	}
 
+}
+
+//35. 搜索插入位置
+func searchInsert(nums []int, target int) int {
+	l, r := 0, len(nums)-1
+	for l <= r {
+		mid := l + (r-l)/2
+		if nums[mid] == target {
+			return mid
+		} else if target < nums[mid] {
+			r = mid - 1
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
 }

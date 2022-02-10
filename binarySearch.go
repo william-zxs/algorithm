@@ -2,6 +2,16 @@ package main
 
 import "fmt"
 
+/*
+
+计算mid时需要防止溢出，代码中 left + (right - left) / 2 就和 (left + right) / 2 的结果相同，但是有效防止了 left 和 right 太大直接相加导致溢出。
+
+分析二分查找代码时，不要出现else，全部展成 else if 方便理解
+
+三个模板
+https://leetcode-cn.com/leetbook/read/binary-search/xewjg7/
+*/
+
 //704. 二分查找
 func search(nums []int, target int) int {
 	m := 0
