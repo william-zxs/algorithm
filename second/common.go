@@ -1159,3 +1159,62 @@ func reverseBits(num uint32) uint32 {
 	}
 	return result
 }
+
+//https://www.lintcode.com/problem/61/
+//61 · 搜索区间
+func searchRange(A []int, target int) []int {
+	// write your code here
+	if len(A) == 0 || A == nil {
+		return []int{-1, -1}
+	}
+	res := binarySearch(A, 0, len(A)-1, target)
+	if res == nil {
+		res = []int{-1, -1}
+	}
+	return res
+}
+
+func binarySearch(A []int, l, r int, target int) []int {
+	if l == r {
+		if A[l] == target {
+			return []int{l, r}
+		} else {
+			return nil
+		}
+	}
+	if l == r-1 {
+		if A[l] == target && A[l] == A[r] {
+			return []int{l, r}
+		}
+		if A[l] == target {
+			return []int{l, l}
+		}
+		if A[r] == target {
+			return []int{r, r}
+		}
+		return nil
+
+	}
+	if l > r {
+		return nil
+	}
+	mid := (l + r) / 2
+	if A[mid] == target {
+		leftTarget := binarySearch(A, l, mid, target)
+		rightTarget := binarySearch(A, mid, r, target)
+		if leftTarget == nil && rightTarget == nil {
+			return nil
+		} else if leftTarget == nil {
+			return rightTarget
+		} else if rightTarget == nil {
+			return leftTarget
+		} else {
+			return []int{leftTarget[0], rightTarget[1]}
+		}
+	} else if A[mid] < target {
+		return binarySearch(A, mid, r, target)
+	} else {
+		return binarySearch(A, l, mid, target)
+	}
+
+}
