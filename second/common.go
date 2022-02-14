@@ -1235,3 +1235,22 @@ func searchInsert(nums []int, target int) int {
 	}
 	return l
 }
+
+// 278. 第一个错误的版本
+func firstBadVersion(n int) int {
+	l, r := 1, n
+	res := 1
+	for l < r {
+		mid := l + (r-l)/2
+		if !isBadVersion(mid) {
+			l = mid + 1
+		} else {
+			r = mid
+		}
+		if l == r {
+			return l
+		}
+	}
+
+	return res
+}
