@@ -28,6 +28,7 @@ import (
 190. 颠倒二进制位
 35. 搜索插入位置
 153. 寻找旋转排序数组中的最小值  边界值和条件需要注意
+33. 搜索旋转排序数组
 */
 
 type TreeNode struct {
@@ -1309,4 +1310,88 @@ func findMinII(nums []int) int {
 		}
 	}
 	return nums[low]
+}
+
+// 33. 搜索旋转排序数组
+func search(nums []int, target int) int {
+	if len(nums) == 1 {
+		if nums[0] == target {
+			return 0
+		} else {
+			return -1
+		}
+	}
+
+	l, r := 0, len(nums)-1
+	for l+1 < r {
+		mid := l + (r-l)/2
+		if nums[mid] == target {
+			return mid
+		} else if nums[0] < nums[mid] {
+			if target >= nums[0] && target < nums[mid] {
+				r = mid - 1
+			} else {
+				l = mid + 1
+			}
+		} else {
+			if target > nums[mid] && target <= nums[len(nums)-1] {
+				l = mid + 1
+			} else {
+				r = mid - 1
+			}
+		}
+	}
+	if nums[l] == target {
+		return l
+	} else if nums[r] == target {
+		return r
+	} else {
+		return -1
+	}
+
+}
+
+// 81. 搜索旋转排序数组 II
+func search(nums []int, target int) bool {
+	if len(nums) == 1 {
+		if nums[0] == target {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	l, r := 0, len(nums)-1
+	for l+1 < r {
+		mid := l + (r-l)/2
+		if nums[mid] == target {
+			return true
+		} else if nums[mid] > nums[0] {
+			//左边非降序
+			if target >= nums[0] && target < nums[mid] {
+				r = mid - 1
+			} else {
+				l = mid + 1
+			}
+		} else if nums[mid] < nums[len(nums)-1] {
+			//右边非降序
+			if target > nums[mid] && target <= nums[len(nums)-1] {
+				l = mid + 1
+			} else {
+				r = mid - 1
+			}
+		} else {
+			if nums[r] == target {
+				return true
+			} else {
+				r = r - 1
+			}
+		}
+	}
+	if nums[l] == target || nums[r] == target {
+		return true
+	} else {
+		return false
+	}
+
 }
