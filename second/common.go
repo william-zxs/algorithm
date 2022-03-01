@@ -1395,3 +1395,38 @@ func search(nums []int, target int) bool {
 	}
 
 }
+
+/*
+排序
+手写 快排 归并 堆排
+*/
+
+//快排的方式
+func sortArray(nums []int) []int {
+	quicksort(nums, 0, len(nums)-1)
+	return nums
+}
+
+func quicksort(nums []int, start int, end int) {
+	if start < end {
+		p := partition(nums, start, end)
+		quicksort(nums, start, p-1)
+		quicksort(nums, p+1, end)
+	}
+}
+
+func partition(nums []int, start, end int) int {
+	base := nums[end]
+	j := start
+	for i := start; i < end; i++ {
+		if nums[i] < base {
+			swap(nums, i, j)
+			j++
+		}
+	}
+	swap(nums, j, end)
+	return j
+}
+func swap(nums []int, i, j int) {
+	nums[i], nums[j] = nums[j], nums[i]
+}
