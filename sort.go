@@ -58,3 +58,37 @@ func merge(left, right []int) []int {
 	res = append(res, right[r:]...)
 	return res
 }
+
+//堆排序
+func HeapSort(a []int) []int {
+	//构建一个大根堆
+	for i := len(a)/2 - 1; i >= 0; i-- {
+		sink(a, i, len(a))
+	}
+
+	//交换根节点和最后一个值
+	for i := len(a) - 1; i >= 1; i-- {
+		swap(a, 0, i)
+		sink(a, 0, i)
+	}
+	return a
+}
+func sink(a []int, i int, length int) {
+	for {
+		l := i*2 + 1
+		r := i*2 + 2
+		idx := i
+		if l < length && a[l] > a[idx] {
+			idx = l
+		}
+		if r < length && a[r] > a[idx] {
+			idx = r
+		}
+
+		if idx == i {
+			break
+		}
+		swap(a, i, idx)
+		i = idx
+	}
+}
