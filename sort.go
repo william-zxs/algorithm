@@ -3,6 +3,7 @@ package algorithm
 //快排
 //时间复杂度最好nlogn, 最差n2
 func QuickSort(nums []int) {
+	// 当数据越偏向于有序的时候，时间复杂度越接近n^2
 	quickSort(nums, 0, len(nums)-1)
 }
 func quickSort(nums []int, start, end int) {
@@ -91,4 +92,15 @@ func sink(a []int, i int, length int) {
 		swap(a, i, idx)
 		i = idx
 	}
+}
+
+func BubblingSort(nums []int) []int {
+	for i := 0; i < len(nums)-1; i++ {
+		for j := 0; j < len(nums)-1; j++ {
+			if nums[j] > nums[j+1] {
+				swap(nums, j, j+1)
+			}
+		}
+	}
+	return nums
 }

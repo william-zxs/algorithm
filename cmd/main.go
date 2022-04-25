@@ -18,7 +18,8 @@ func main() {
 	data := []int{5, 1, 2, 4, 8, 3, 6, 7}
 	//algorithm.QuickSort(data)
 	//data = algorithm.MergeSort(data)
-	data = algorithm.HeapSort(data)
+	//data = algorithm.HeapSort(data)
+	data = algorithm.BubblingSort(data)
 	fmt.Println(data)
 
 }
