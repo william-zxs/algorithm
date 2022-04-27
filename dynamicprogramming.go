@@ -102,3 +102,33 @@ func uniquePaths(m int, n int) int {
 	}
 	return f[m-1][n-1]
 }
+
+//63. 不同路径 II 中等
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m := len(obstacleGrid)
+	n := len(obstacleGrid[0])
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if obstacleGrid[i][j] == 1 {
+				obstacleGrid[i][j] = 0
+				continue
+			}
+
+			if i == 0 && j == 0 {
+				obstacleGrid[0][0] = 1
+				continue
+			}
+
+			if i == 0 {
+				obstacleGrid[0][j] = obstacleGrid[0][j-1]
+				continue
+			}
+			if j == 0 {
+				obstacleGrid[i][0] = obstacleGrid[i-1][0]
+				continue
+			}
+			obstacleGrid[i][j] = obstacleGrid[i][j-1] + obstacleGrid[i-1][j]
+		}
+	}
+	return obstacleGrid[m-1][n-1]
+}
