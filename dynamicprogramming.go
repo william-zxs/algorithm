@@ -76,3 +76,29 @@ func minPathSum(grid [][]int) int {
 	return f[m-1][n-1]
 
 }
+
+//62. 不同路径 中等
+func uniquePaths(m int, n int) int {
+	f := make([][]int, m)
+	for i := 0; i < m; i++ {
+		f[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if i == 0 && j == 0 {
+				f[0][0] = 1
+				continue
+			}
+			if i == 0 {
+				f[0][j] = f[0][j-1]
+				continue
+			}
+			if j == 0 {
+				f[i][0] = f[i-1][0]
+				continue
+			}
+			f[i][j] = f[i][j-1] + f[i-1][j]
+		}
+	}
+	return f[m-1][n-1]
+}
