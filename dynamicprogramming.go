@@ -46,3 +46,33 @@ func min(n, m int) int {
 	}
 	return n
 }
+
+//64. 最小路径和 中等
+func minPathSum(grid [][]int) int {
+	m := len(grid)
+	n := len(grid[0])
+	f := make([][]int, m)
+	for i := 0; i < m; i++ {
+		f[i] = make([]int, n)
+	}
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if i == 0 {
+				if j == 0 {
+					f[0][0] = grid[0][0]
+				} else {
+					f[0][j] = f[0][j-1] + grid[i][j]
+				}
+				continue
+			}
+			if j == 0 {
+				f[i][0] = f[i-1][0] + grid[i][0]
+				continue
+			}
+			f[i][j] = min(f[i-1][j], f[i][j-1]) + grid[i][j]
+		}
+	}
+	return f[m-1][n-1]
+
+}
