@@ -150,5 +150,44 @@ func climbStairs(n int) int {
 		a = b
 		b = c
 	}
+
 	return b
+}
+
+//55. 跳跃游戏 中等
+func canJump(nums []int) bool {
+	// 也可以用贪心算法
+	f := make([]bool, len(nums))
+	f[0] = true
+	for i := 1; i < len(nums); i++ {
+		for j := i - 1; j >= 0; j-- {
+			if f[j] == false {
+				continue
+			}
+			if nums[j] >= i-j {
+				f[i] = true
+				break
+			}
+		}
+	}
+
+	return f[len(nums)-1]
+}
+
+//45. 跳跃游戏 II 中等
+func jump(nums []int) int {
+	//使用贪心算法 时间复杂度可以降低到n
+	f := make([]int, len(nums))
+	for i := 0; i < len(f); i++ {
+		f[i] = math.MaxInt
+	}
+	f[0] = 0
+	for i := 1; i < len(nums); i++ {
+		for j := i - 1; j >= 0; j-- {
+			if j+nums[j] >= i {
+				f[i] = min(f[i], f[j]+1)
+			}
+		}
+	}
+	return f[len(nums)-1]
 }
