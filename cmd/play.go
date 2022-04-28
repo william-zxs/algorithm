@@ -5,6 +5,16 @@ import (
 	"unsafe"
 )
 
+type AA struct{}
+
+type BB struct {
+	AA
+}
+
+func work(data AA) {
+	fmt.Println("====")
+}
+
 func Play() {
 	a := "abcd"
 	fmt.Printf("==%v==%+v \n", a, a)

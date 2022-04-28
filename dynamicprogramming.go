@@ -2,6 +2,12 @@ package algorithm
 
 import "math"
 
+//Matrix DP (10%)
+//Sequence (40%)
+//Two Sequences DP (40%)
+//Backpack (10%)
+
+//Matrix DP (10%)
 //120. 三角形最小路径和
 func minimumTotal(triangle [][]int) int {
 	//动态规划，找到状态转移方程
@@ -131,4 +137,18 @@ func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 		}
 	}
 	return obstacleGrid[m-1][n-1]
+}
+
+//Sequence (40%)
+//70. 爬楼梯 简单
+func climbStairs(n int) int {
+	a := 1
+	b := 1
+	c := 0
+	for i := 2; i < n+1; i++ {
+		c = a + b
+		a = b
+		b = c
+	}
+	return b
 }

@@ -17,5 +17,6 @@ func main() {
 	//data = algorithm.BubblingSort(data)
 	//fmt.Println(data)
 	//ChanSlice()
-	PlainSlice()
+	//PlainSlice()
+
 }
