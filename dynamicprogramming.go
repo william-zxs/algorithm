@@ -176,7 +176,7 @@ func canJump(nums []int) bool {
 
 //45. 跳跃游戏 II 中等
 func jump(nums []int) int {
-	//使用贪心算法 时间复杂度可以降低到n
+	//使用贪心算法 时间复杂度可以降低到n todo
 	f := make([]int, len(nums))
 	for i := 0; i < len(f); i++ {
 		f[i] = math.MaxInt

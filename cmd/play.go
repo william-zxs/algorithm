@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"unsafe"
 )
 
 type AA struct{}
@@ -16,8 +15,5 @@ func work(data AA) {
 }
 
 func Play() {
-	a := "abcd"
-	fmt.Printf("==%v==%+v \n", a, a)
-	u := user{}
-	fmt.Println(unsafe.Sizeof(u))
+
 }
