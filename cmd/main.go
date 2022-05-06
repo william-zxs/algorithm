@@ -4,7 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
+	"os"
 	"reflect"
 	"runtime"
 	"sync"
@@ -434,7 +438,7 @@ func string2bytes(s string) []byte {
 	return *(*[]byte)(unsafe.Pointer(&s))
 }
 
-func main() {
+func StringBytesSliceTransfer() {
 	str := "abcd"
 	a := StringToBytes(str)
 	//a := BytesToString([]byte("abcd"))
@@ -455,4 +459,253 @@ func main() {
 	fmt.Println(a, len(a), cap(a))
 	runtime.KeepAlive(&str)
 
+}
+
+// 定义一个 Person 结构体，有Name和Age变量
+type Person2 struct {
+	Name string
+	Age  int
+}
+
+// 初始化sync.Pool，new函数就是创建Person结构体
+func initPool() *sync.Pool {
+	return &sync.Pool{
+		New: func() interface{} {
+			fmt.Println("创建一个 person.")
+			return &Person2{}
+		},
+	}
+}
+
+func syncpoolTest() {
+	pool := initPool()
+	person := pool.Get().(*Person2)
+	fmt.Println("首次从sync.Pool中获取person：", person)
+	person.Name = "Jack"
+	person.Age = 23
+	pool.Put(person)
+	fmt.Println("设置的对象Name: ", person.Name)
+	fmt.Println("设置的对象Age: ", person.Age)
+	fmt.Println("Pool 中有一个对象，调用Get方法获取：", pool.Get().(*Person2))
+	fmt.Println("Pool 中没有对象了，再次调用Get方法：", pool.Get().(*Person2))
+}
+func memTest() {
+	num := 6
+	for index := 0; index < num; index++ {
+		resp, _ := http.Get("https://www.baidu.com")
+		_, _ = ioutil.ReadAll(resp.Body)
+	}
+	fmt.Printf("此时goroutine个数= %d\n", runtime.NumGoroutine())
+}
+
+func timeTicker() {
+	ticker := time.NewTicker(5 * time.Second)
+
+	c := make(chan int, 5)
+
+	for i := 0; i < 5; i++ {
+		go func(i int) {
+			tmp := rand.Intn(10)
+			fmt.Println("I want to sleep", tmp, "seconds!")
+			time.Sleep(time.Duration(tmp) * time.Second)
+
+			c <- i
+		}(i)
+	}
+	for {
+		select {
+		case i := <-c:
+			fmt.Printf("The %d goroutine is done.\n", i)
+		case <-ticker.C:
+			fmt.Println("Time to go out!")
+			os.Exit(5)
+		}
+	}
+}
+func MyOperate1(ctx context.Context) {
+	for {
+		select {
+		default:
+			fmt.Println("MyOperate1", time.Now().Format("2006-01-02 15:04:05"))
+			time.Sleep(2 * time.Second)
+		case <-ctx.Done():
+			fmt.Println("MyOperate1 Done")
+			return
+		}
+	}
+}
+func MyOperate2(ctx context.Context) {
+	fmt.Println("Myoperate2")
+}
+func MyDo2(ctx context.Context) {
+	go MyOperate1(ctx)
+	go MyOperate2(ctx)
+	for {
+		select {
+		default:
+			fmt.Println("MyDo2 : ", time.Now().Format("2006-01-02 15:04:05"))
+			time.Sleep(2 * time.Second)
+		case <-ctx.Done():
+			fmt.Println("MyDo2 Done")
+			return
+		}
+	}
+
+}
+func MyDo1(ctx context.Context) {
+	go MyDo2(ctx)
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("MyDo1 Done")
+			// 打印 ctx 关闭原因
+			fmt.Println(ctx.Err())
+			return
+		default:
+			fmt.Println("MyDo1 : ", time.Now().Format("2006-01-02 15:04:05"))
+			time.Sleep(2 * time.Second)
+		}
+	}
+}
+func WithCanceltest() {
+	// 创建 cancelCtx 实例
+	// 传入context.Background() 作为根节点
+	ctx, cancel := context.WithCancel(context.Background())
+	// 向协程中传递ctx
+	go MyDo1(ctx)
+	time.Sleep(5 * time.Second)
+	fmt.Println("stop all goroutines")
+	// 执行cancel操作
+	cancel()
+	time.Sleep(2 * time.Second)
+}
+
+func dl2(ctx context.Context) {
+	n := 1
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println(ctx.Err())
+			return
+		default:
+			fmt.Println("dl2 : ", n)
+			n++
+			time.Sleep(time.Second)
+		}
+	}
+}
+
+func dl1(ctx context.Context) {
+	n := 1
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println(ctx.Err())
+			return
+		default:
+			fmt.Println("dl1 : ", n)
+			n++
+			time.Sleep(2 * time.Second)
+		}
+	}
+}
+
+func contextTest2() {
+	// 设置deadline为当前时间之后的5秒那个时刻
+	d := time.Now().Add(5 * time.Second)
+	ctx, cancel := context.WithDeadline(context.Background(), d)
+	defer cancel()
+	go dl1(ctx)
+	go dl2(ctx)
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("over", ctx.Err())
+			return
+		}
+	}
+}
+
+var done2 = false
+
+func read2(name string, c *sync.Cond) {
+	c.L.Lock()
+	for !done2 {
+		log.Println(name, "starts wait")
+		c.Wait()
+	}
+	log.Println(name, "starts reading")
+	time.Sleep(time.Second)
+	c.L.Unlock()
+}
+
+func write2(name string, c *sync.Cond) {
+	log.Println(name, "starts writing")
+	time.Sleep(time.Second)
+	c.L.Lock()
+	done2 = true
+
+	time.Sleep(time.Second * 3)
+	c.L.Unlock()
+	c.Broadcast()
+	log.Println(name, "wakes all")
+
+}
+
+func CondTest() {
+	cond := sync.NewCond(&sync.Mutex{})
+
+	go read2("reader1", cond)
+	go read2("reader2", cond)
+	go read2("reader3", cond)
+	time.Sleep(time.Second)
+	write2("writer", cond)
+
+	time.Sleep(time.Second * 3)
+}
+
+var (
+	once   sync.Once
+	config *Config
+)
+
+type Config struct {
+	Url  string
+	Port int
+}
+
+func IntConfig() *Config {
+	once.Do(
+		func() {
+			config = &Config{
+				Url:  "https://fanyi.baidu.com/#en/zh/",
+				Port: 443,
+			}
+			fmt.Println("==init config==", config)
+		},
+	)
+
+	return config
+}
+
+func syncOnceTest() {
+
+	for i := 0; i < 10; i++ {
+		go IntConfig()
+	}
+	time.Sleep(time.Second)
+}
+func newString() *string {
+	s := new(string)
+	*s = "wohu"
+	return s
+}
+func escapetest() {
+	//go build -gcflags="-m -l" main.go
+	newString()
+}
+
+func main() {
+
+	escapetest()
 }
