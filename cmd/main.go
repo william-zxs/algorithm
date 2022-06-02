@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/William-ZXS/algorithm"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -705,7 +707,63 @@ func escapetest() {
 	newString()
 }
 
-func main() {
+func errTest() (err error, d int) {
 
-	escapetest()
+	defer func() {
+		if r := recover(); r != nil {
+			err = errors.New(fmt.Sprintf("%s", r))
+		}
+	}()
+	//err = errors.New("dddd")
+	panic("bbbb")
+	fmt.Println("ccccc")
+	err = errors.New("dddd")
+	d = 10
+	return err, d
+}
+
+func rangeTest() {
+	a := []int{1, 2, 3}
+	for k, v := range a {
+		//fmt.Println(a, k, v)
+		if k == 0 {
+			a[0], a[1] = 100, 200
+			//fmt.Println(a)
+		}
+		a[k] = 100 + v
+
+	}
+	fmt.Println(a)
+}
+
+func QuickSort(nums []int) []int {
+	quickSort(nums, 0, len(nums)-1)
+	return nums
+}
+func quickSort(nums []int, start, end int) {
+	if start >= end {
+		return
+	}
+
+	j := start
+	for i := start; i < end; i++ {
+		if nums[i] < nums[end] {
+			swap(nums, i, j)
+			j++
+		}
+	}
+	swap(nums, j, end)
+
+	quickSort(nums, start, j-1)
+	quickSort(nums, j+1, end)
+}
+
+func swap(nums []int, i, j int) {
+	nums[i], nums[j] = nums[j], nums[i]
+}
+
+func main() {
+	s := "aabcc"
+	res := algorithm.Partition(s)
+	fmt.Println(res)
 }

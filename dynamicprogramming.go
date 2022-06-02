@@ -1,6 +1,8 @@
 package algorithm
 
-import "math"
+import (
+	"math"
+)
 
 //Matrix DP (10%)
 //Sequence (40%)
@@ -190,4 +192,41 @@ func jump(nums []int) int {
 		}
 	}
 	return f[len(nums)-1]
+}
+
+//131. 分割回文串 中等
+func Partition(s string) (res [][]string) {
+	//动态规划+回溯
+	l := len(s)
+	f := make([][]bool, l)
+	for i := 0; i < l; i++ {
+		f[i] = make([]bool, l)
+		for j := 0; j < l; j++ {
+			f[i][j] = true
+		}
+	}
+	for i := l - 1; i >= 0; i-- {
+		for j := i + 1; j < l; j++ {
+			f[i][j] = s[i] == s[j] && f[i+1][j-1]
+		}
+	}
+
+	var dfs func(i int)
+	split := []string{}
+	dfs = func(i int) {
+		if i == l {
+			res = append(res, append([]string{}, split...))
+			return
+		}
+
+		for j := i; j < l; j++ {
+			if f[i][j] {
+				split = append(split, s[i:j+1])
+				dfs(j + 1)
+				split = split[:len(split)-1]
+			}
+		}
+	}
+	dfs(0)
+	return
 }
