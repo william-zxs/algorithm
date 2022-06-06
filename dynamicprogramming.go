@@ -230,3 +230,27 @@ func Partition(s string) (res [][]string) {
 	dfs(0)
 	return
 }
+
+//300. 最长递增子序列 中等
+func lengthOfLIS(nums []int) int {
+	dp := make([]int, 0)
+	dp = append(dp, 1)
+	maxL := 1
+	for i := 1; i < len(nums); i++ {
+		dp = append(dp, 1)
+		for j := 0; j < i; j++ {
+			if nums[j] < nums[i] {
+				dp[i] = max(dp[i], dp[j]+1)
+			}
+		}
+		maxL = max(maxL, dp[i])
+	}
+	return maxL
+}
+
+func max(m, n int) int {
+	if m > n {
+		return m
+	}
+	return n
+}
