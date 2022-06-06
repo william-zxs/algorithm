@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/William-ZXS/algorithm"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -762,8 +761,43 @@ func swap(nums []int, i, j int) {
 	nums[i], nums[j] = nums[j], nums[i]
 }
 
+func Partition(s string) (res [][]string) {
+	//动态规划
+	f := make([][]bool, len(s))
+	for i := 0; i < len(s); i++ {
+		f[i] = make([]bool, len(s))
+		for j := 0; j < len(s); j++ {
+			f[i][j] = true
+		}
+	}
+	for i := len(s) - 1; i >= 0; i-- {
+		for j := i + 1; j < len(s); j++ {
+			f[i][j] = s[i] == s[j] && f[i+1][j-1]
+		}
+	}
+
+	//dfs 来查找所有的情况
+	var dfs func(i int)
+	var split = make([]string, 0)
+	dfs = func(i int) {
+		if i == len(s) {
+			res = append(res, append(make([]string, len(split)), split...))
+			return
+		}
+		for j := i; j < len(s); j++ {
+			if f[i][j] {
+				split = append(split, s[i:j+1])
+				dfs(j + 1)
+				split = split[:len(split)-1]
+			}
+		}
+	}
+	dfs(0)
+	return
+}
+
 func main() {
 	s := "aabcc"
-	res := algorithm.Partition(s)
+	res := Partition(s)
 	fmt.Println(res)
 }
