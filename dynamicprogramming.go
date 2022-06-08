@@ -254,3 +254,23 @@ func max(m, n int) int {
 	}
 	return n
 }
+
+//139. 单词拆分 中等
+func wordBreak(s string, wordDict []string) bool {
+	existMap := make(map[string]bool, 0)
+	for _, word := range wordDict {
+		existMap[word] = true
+	}
+
+	dp := make([]bool, len(s)+1)
+	dp[0] = true
+	for i := 1; i < len(s)+1; i++ {
+		for j := 0; j < i; j++ {
+			if dp[j] && existMap[s[j:i]] {
+				dp[i] = true
+				break
+			}
+		}
+	}
+	return dp[len(s)]
+}
