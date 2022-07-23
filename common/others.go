@@ -1,4 +1,4 @@
-package algorithm
+package common
 
 //翻转含有中⽂、数字、英⽂字⺟的字符串
 func ReverseStr(str string) string {
