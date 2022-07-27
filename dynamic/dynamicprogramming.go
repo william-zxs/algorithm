@@ -274,3 +274,42 @@ func wordBreak(s string, wordDict []string) bool {
 	}
 	return dp[len(s)]
 }
+
+//322. 零钱兑换
+//中等
+func coinChange(coins []int, amount int) int {
+	// 需要再优化
+	dp := make(map[int]int, 0)
+	dp[0] = 0
+
+	var min func(amount int) (minCount int)
+	min = func(amount int) (minCount int) {
+		minCount = -1
+		for _, v := range coins {
+			if amount-v < 0 {
+				continue
+			} else if amount-v == 0 {
+				minCount = 0
+				return
+			}
+			if dp[amount-v] > 0 {
+				if minCount == -1 || minCount > dp[amount-v] {
+					minCount = dp[amount-v]
+				}
+			} else {
+				continue
+			}
+		}
+		return
+	}
+
+	for i := 1; i <= amount; i++ {
+		minCount := min(i)
+		if minCount == -1 {
+			dp[i] = -1
+		} else {
+			dp[i] = minCount + 1
+		}
+	}
+	return dp[amount]
+}
