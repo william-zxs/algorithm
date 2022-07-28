@@ -278,38 +278,21 @@ func wordBreak(s string, wordDict []string) bool {
 //322. 零钱兑换
 //中等
 func coinChange(coins []int, amount int) int {
-	// 需要再优化
-	dp := make(map[int]int, 0)
-	dp[0] = 0
-
-	var min func(amount int) (minCount int)
-	min = func(amount int) (minCount int) {
-		minCount = -1
-		for _, v := range coins {
-			if amount-v < 0 {
-				continue
-			} else if amount-v == 0 {
-				minCount = 0
-				return
-			}
-			if dp[amount-v] > 0 {
-				if minCount == -1 || minCount > dp[amount-v] {
-					minCount = dp[amount-v]
-				}
-			} else {
-				continue
-			}
-		}
-		return
+	//只要值大于amount，就是没有组合可以组成
+	dp := make([]int, amount+1)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = amount + 1
 	}
-
+	dp[0] = 0
 	for i := 1; i <= amount; i++ {
-		minCount := min(i)
-		if minCount == -1 {
-			dp[i] = -1
-		} else {
-			dp[i] = minCount + 1
+		for j := 0; j < len(coins); j++ {
+			if i >= coins[j] {
+				dp[i] = min(dp[i], dp[i-coins[j]]+1)
+			}
 		}
+	}
+	if dp[amount] >= amount+1 {
+		return -1
 	}
 	return dp[amount]
 }
