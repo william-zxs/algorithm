@@ -296,3 +296,20 @@ func coinChange(coins []int, amount int) int {
 	}
 	return dp[amount]
 }
+
+//92 · 背包问题
+//中等 https://www.lintcode.com/problem/92/description
+func BackPack(m int, a []int) int {
+
+	f := make([]int, m+1)
+	for i := 0; i < m+1; i++ {
+		f[i] = 0
+	}
+
+	for i := 0; i < len(a); i++ {
+		for j := m; j >= a[i]; j-- {
+			f[j] = max(f[j], f[j-a[i]]+a[i])
+		}
+	}
+	return f[m]
+}
