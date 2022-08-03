@@ -313,3 +313,7 @@ func BackPack(m int, a []int) int {
 	}
 	return f[m]
 }
+
+//todo
+//125 · 背包问题（二）
+//https://www.lintcode.com/problem/125/solution/56819
