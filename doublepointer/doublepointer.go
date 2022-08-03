@@ -18,3 +18,12 @@ func MaxSum(cycle []int, N int) int {
 	}
 	return sum
 }
+
+//344. 反转字符串
+func reverseString(s []byte) []byte {
+	l := len(s)
+	for i := 0; i < l/2; i++ {
+		s[i], s[l-i-1] = s[l-i-1], s[i]
+	}
+	return s
+}
