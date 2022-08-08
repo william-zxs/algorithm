@@ -144,3 +144,37 @@ func findAnagrams(s string, p string) []int {
 	return res
 
 }
+
+//3. 无重复字符的最长子串
+func lengthOfLongestSubstring(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+
+	maxL := 0
+	state := make(map[byte]int, 0)
+
+	for r, l := 0, 0; r < len(s); r++ {
+		state[s[r]]++
+		if state[s[r]] == 1 {
+			maxL = max(maxL, r-l+1)
+		} else {
+			for l < r {
+				state[s[l]]--
+				if s[l] == s[r] {
+					l++
+					break
+				}
+				l++
+			}
+		}
+	}
+	return maxL
+}
+
+func max(m, n int) int {
+	if m > n {
+		return m
+	}
+	return n
+}
