@@ -97,3 +97,29 @@ func isValidBST3(root *TreeNode) bool {
 	}
 	return true
 }
+
+//701. 二叉搜索树中的插入操作
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{Val: val}
+	}
+
+	dummy := root
+
+	for root != nil {
+		if root.Val < val {
+			if root.Right == nil {
+				root.Right = &TreeNode{Val: val}
+				return dummy
+			}
+			root = root.Right
+		} else {
+			if root.Left == nil {
+				root.Left = &TreeNode{Val: val}
+				return dummy
+			}
+			root = root.Left
+		}
+	}
+	return dummy
+}
