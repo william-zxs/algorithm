@@ -2,6 +2,8 @@ package tree
 
 import "math"
 
+//树问题的解决，可以用递归就用递归，会降低问题的复杂性
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -122,4 +124,35 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 		}
 	}
 	return dummy
+}
+
+//450. 删除二叉搜索树中的节点
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root.Val > key {
+		root.Left = deleteNode(root.Left, key)
+		return root
+	}
+
+	if root.Val < key {
+		root.Right = deleteNode(root.Right, key)
+		return root
+	}
+
+	if root.Left == nil {
+		return root.Right
+	}
+
+	if root.Right == nil {
+		return root.Left
+	}
+
+	right := root.Right
+	for right.Left != nil {
+		right = right.Left
+	}
+	right.Left = root.Left
+	return root.Right
 }
