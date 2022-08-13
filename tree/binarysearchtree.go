@@ -156,3 +156,28 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 	right.Left = root.Left
 	return root.Right
 }
+
+//110. 平衡二叉树
+func isBalanced(root *TreeNode) bool {
+	_, res := isBalancedHelper(root)
+	return res
+}
+
+func isBalancedHelper(root *TreeNode) (int, bool) {
+	if root == nil {
+		return 0, true
+	}
+	l, resl := isBalancedHelper(root.Left)
+	r, resr := isBalancedHelper(root.Right)
+	if !resl || !resr {
+		return 0, false
+	}
+	if l-r > 1 || r-l > 1 {
+		return 0, false
+	}
+
+	if l > r {
+		return l + 1, true
+	}
+	return r + 1, true
+}
