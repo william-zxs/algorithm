@@ -1,5 +1,7 @@
 package backtrack
 
+import "strings"
+
 //回溯法
 
 //46. 全排列
@@ -29,4 +31,69 @@ func permute(nums []int) [][]int {
 	backtrack(nums, track, used)
 
 	return result
+}
+
+func solveNQueens(n int) [][]string {
+	board := make([][]string, n)
+	for i := 0; i < n; i++ {
+		board[i] = make([]string, n)
+		for j := 0; j < n; j++ {
+			board[i][j] = "."
+		}
+	}
+
+	result := make([][]string, 0)
+
+	var backtrack func(m int)
+	backtrack = func(m int) {
+		if m == n {
+			//保存结果
+			res := []string{}
+			for i := 0; i < len(board); i++ {
+				res = append(res, strings.Join(board[i], ""))
+			}
+			result = append(result, res)
+			return
+		}
+		for i := 0; i < n; i++ {
+			//校验
+			if !IsValid(board, m, i) {
+				continue
+			}
+			//选择
+			board[m][i] = "Q"
+			//递归
+			backtrack(m + 1)
+			//撤销
+			board[m][i] = "."
+		}
+	}
+
+	backtrack(0)
+	return result
+}
+
+//51. N 皇后
+func IsValid(board [][]string, m, i int) bool {
+	//校验左上角
+	for m, i := m-1, i-1; m >= 0 && i >= 0; m, i = m-1, i-1 {
+
+		if board[m][i] == "Q" {
+			return false
+		}
+
+	}
+	//校验上面
+	for m := m - 1; m >= 0; m = m - 1 {
+		if board[m][i] == "Q" {
+			return false
+		}
+	}
+	//校验右上角
+	for m, i := m-1, i+1; m >= 0 && i < len(board); m, i = m-1, i+1 {
+		if board[m][i] == "Q" {
+			return false
+		}
+	}
+	return true
 }
