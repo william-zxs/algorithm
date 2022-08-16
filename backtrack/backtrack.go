@@ -97,3 +97,25 @@ func IsValid(board [][]string, m, i int) bool {
 	}
 	return true
 }
+
+//78. 子集
+func subsets(nums []int) [][]int {
+
+	result := make([][]int, 0)
+	track := make([]int, 0)
+	var backtrack func(nums []int, start int)
+	backtrack = func(nums []int, start int) {
+		//前置
+		result = append(result, append([]int{}, track...))
+		for i := start; i < len(nums); i++ {
+			//选择
+			track = append(track, nums[i])
+			//递归
+			backtrack(nums, i+1)
+			//撤销选择
+			track = track[:len(track)-1]
+		}
+	}
+	backtrack(nums, 0)
+	return result
+}
