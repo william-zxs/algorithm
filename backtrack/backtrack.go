@@ -119,3 +119,33 @@ func subsets(nums []int) [][]int {
 	backtrack(nums, 0)
 	return result
 }
+
+//77. 组合
+func combine(n int, k int) [][]int {
+	//子集问题的减枝
+	if n == 1 && k == 1 {
+		return [][]int{{1}}
+	}
+
+	result := make([][]int, 0)
+	track := make([]int, 0)
+	var trackback func(track []int, start int)
+	trackback = func(track []int, start int) {
+		//加入结果集
+		if len(track) == k {
+			result = append(result, append([]int{}, track...))
+		}
+		//start 从1开始
+		for i := start; i <= n; i++ {
+			//做选择
+			track = append(track, i)
+			//递归
+			trackback(track, i+1)
+			//撤销选择
+			track = track[:len(track)-1]
+		}
+	}
+	//start 从1开始
+	trackback(track, 1)
+	return result
+}
