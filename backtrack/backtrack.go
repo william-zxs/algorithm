@@ -175,3 +175,37 @@ func subsetsWithDup(nums []int) [][]int {
 	backtrack(0)
 	return result
 }
+
+//40. 组合总和 II
+func combinationSum2(candidates []int, target int) [][]int {
+	result := make([][]int, 0)
+	track := make([]int, 0)
+	sort.Sort(sort.IntSlice(candidates))
+	var backtrack func(start int, sum int)
+
+	backtrack = func(start int, sum int) {
+		//先判断是否满足条件
+		if sum == target {
+			result = append(result, append([]int{}, track...))
+		} else if sum > target {
+			return
+		}
+
+		for i := start; i < len(candidates); i++ {
+			//剪枝
+			if i > start && candidates[i] == candidates[i-1] {
+				continue
+			}
+			track = append(track, candidates[i])
+			sum += candidates[i]
+
+			backtrack(i+1, sum)
+			sum -= candidates[i]
+			track = track[:len(track)-1]
+
+		}
+
+	}
+	backtrack(0, 0)
+	return result
+}
