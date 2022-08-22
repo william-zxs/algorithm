@@ -1,6 +1,9 @@
 package backtrack
 
-import "strings"
+import (
+	"sort"
+	"strings"
+)
 
 //回溯法
 
@@ -147,5 +150,28 @@ func combine(n int, k int) [][]int {
 	}
 	//start 从1开始
 	trackback(track, 1)
+	return result
+}
+
+//90. 子集 II
+func subsetsWithDup(nums []int) [][]int {
+	track := make([]int, 0)
+	// used := make([]bool,len(nums))
+	result := make([][]int, 0)
+	sort.Sort(sort.IntSlice(nums))
+	var backtrack func(start int)
+	backtrack = func(start int) {
+		result = append(result, append([]int{}, track...))
+
+		for i := start; i < len(nums); i++ {
+			if i > start && nums[i] == nums[i-1] {
+				continue
+			}
+			track = append(track, nums[i])
+			backtrack(i + 1)
+			track = track[:len(track)-1]
+		}
+	}
+	backtrack(0)
 	return result
 }
