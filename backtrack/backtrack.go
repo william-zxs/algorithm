@@ -209,3 +209,73 @@ func combinationSum2(candidates []int, target int) [][]int {
 	backtrack(0, 0)
 	return result
 }
+
+//47. 全排列 II
+func permuteUnique(nums []int) [][]int {
+	//排序
+	//剪枝
+	//收集树的最后一层节点
+
+	track := make([]int, 0)
+	useMap := make(map[int]int, 0)
+	result := make([][]int, 0)
+	sort.Sort(sort.IntSlice(nums))
+
+	for _, n := range nums {
+		useMap[n] = useMap[n] + 1
+	}
+
+	var trackback func()
+	trackback = func() {
+		//判断是否满足要求
+		if len(track) == len(nums) {
+			result = append(result, append([]int{}, track...))
+			return
+		}
+		for i := 0; i < len(nums); i++ {
+			if useMap[nums[i]] == 0 {
+				continue
+			}
+			if i > 0 && nums[i] == nums[i-1] {
+				continue
+			}
+			//choice
+			track = append(track, nums[i])
+			useMap[nums[i]] = useMap[nums[i]] - 1
+			trackback()
+			track = track[:len(track)-1]
+			useMap[nums[i]] = useMap[nums[i]] + 1
+
+		}
+
+	}
+	trackback()
+	return result
+}
+
+//39. 组合总和
+func combinationSum(candidates []int, target int) [][]int {
+	track := make([]int, 0)
+	result := make([][]int, 0)
+	var trackback func(start int, sum int)
+	trackback = func(start int, sum int) {
+		if sum == target {
+			result = append(result, append([]int{}, track...))
+			return
+		} else if sum > target {
+			return
+		}
+
+		for i := start; i < len(candidates); i++ {
+			//选择
+			track = append(track, candidates[i])
+			sum += candidates[i]
+			trackback(i, sum)
+			sum -= candidates[i]
+			track = track[:len(track)-1]
+		}
+
+	}
+	trackback(0, 0)
+	return result
+}
