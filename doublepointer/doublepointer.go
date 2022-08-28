@@ -5,6 +5,11 @@ import (
 	"math"
 )
 
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
 //双指针 和 滑动窗口 类型题目
 
 func MaxSum(cycle []int, N int) int {
@@ -177,4 +182,24 @@ func max(m, n int) int {
 		return m
 	}
 	return n
+}
+
+//19. 删除链表的倒数第 N 个结点
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	p1 := head
+	i := 1
+	for ; i < n; i++ {
+		p1 = p1.Next
+	}
+	p2 := head
+	pre := dummy
+	for p1.Next != nil {
+		p1 = p1.Next
+		pre = p2
+		p2 = p2.Next
+	}
+	pre.Next = pre.Next.Next
+	return dummy.Next
 }
