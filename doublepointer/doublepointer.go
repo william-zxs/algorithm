@@ -216,3 +216,45 @@ func middleNode(head *ListNode) *ListNode {
 	}
 	return j
 }
+
+//判断链表是否包含环
+func HasRing(head *ListNode) bool {
+	//快慢双指针，相遇则有环，如果快指针遇到nil，则无环
+	s := head
+	f := head
+	for f != nil && f.Next != nil {
+		s = s.Next
+		f = f.Next.Next
+		if f == s {
+			return true
+		}
+	}
+	return false
+}
+
+//如果链表中含有环，如何计算这个环的起点？
+func DetectCycle(head *ListNode) *ListNode {
+	//快慢指针，如果快指针遇到nil，则没有环；如果快慢指针相遇，则有环;
+	//此时慢指针回到head，快指针和慢指针同速度，相遇点即为环起点
+	s := head
+	f := head
+	for f != nil && f.Next != nil {
+		s = s.Next
+		f = f.Next.Next
+		if s == f {
+			//说明有环
+			break
+		}
+	}
+	if f == nil || f.Next == nil {
+		//说明无环
+		return nil
+	}
+
+	s = head
+	for s != f {
+		s = s.Next
+		f = f.Next
+	}
+	return s
+}
