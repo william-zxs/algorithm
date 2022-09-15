@@ -277,3 +277,63 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	}
 	return a
 }
+
+//167. 两数之和 II - 输入有序数组
+func twoSum(numbers []int, target int) []int {
+	l, r := 0, len(numbers)-1
+	for l < r {
+		sum := numbers[l] + numbers[r]
+		if sum == target {
+			return []int{l + 1, r + 1}
+		} else if sum < target {
+			l = l + 1
+		} else {
+			r = r - 1
+		}
+	}
+	return []int{-1, -1}
+}
+
+//344. 反转字符串
+func reverseString2(s []byte) {
+	l, r := 0, len(s)-1
+	for l < r {
+		s[l], s[r] = s[r], s[l]
+		l++
+		r--
+	}
+}
+
+//5. 最长回文子串
+func longestPalindrome(s string) string {
+	if len(s) == 0 || len(s) == 1 {
+		return s
+	}
+
+	var res string
+	for i := 0; i < len(s)-1; i++ {
+		res1 := helper(s, i, i)
+		res2 := helper(s, i, i+1)
+		if len(res) < len(res1) {
+			res = res1
+		}
+		if len(res) < len(res2) {
+			res = res2
+		}
+
+	}
+	return res
+}
+
+func helper(s string, l, r int) string {
+	for l >= 0 && r < len(s) && s[l] == s[r] {
+		l--
+		r++
+	}
+	l = l + 1
+	r = r
+	if l > r {
+		return ""
+	}
+	return s[l:r]
+}
