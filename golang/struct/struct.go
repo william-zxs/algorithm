@@ -12,6 +12,16 @@ type S struct {
 	F4 int16
 }
 
+//空 struct的 坑点
+func compareZeroStruct() {
+	a := new(struct{})
+	b := new(struct{})
+	//打开print 则下面的比较相等，因为print会使其逃逸，地址都是zerobase，go run -gcflags="-m -l" playground.go
+	//注释掉就不相等了，变量没有逃逸，编译器会直接返回false
+	//fmt.Println(a, b)
+	fmt.Println("a == b:", a == b)
+}
+
 func main() {
 	s := S{
 		F1: 1,
