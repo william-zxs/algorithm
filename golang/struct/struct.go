@@ -14,6 +14,7 @@ type S struct {
 
 //空 struct的 坑点
 func compareZeroStruct() {
+	//https://mp.weixin.qq.com/s/K5B2ItkzOb4eCFLxZI5Wvw
 	a := new(struct{})
 	b := new(struct{})
 	//打开print 则下面的比较相等，因为print会使其逃逸，地址都是zerobase，go run -gcflags="-m -l" playground.go

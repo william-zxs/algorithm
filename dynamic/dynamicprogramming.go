@@ -317,3 +317,29 @@ func BackPack(m int, a []int) int {
 //todo
 //125 · 背包问题（二）
 //https://www.lintcode.com/problem/125/solution/56819
+
+//322. 零钱兑换
+func coinChange_(coins []int, amount int) int {
+	//迭代的方式，从底层向上
+	dp := make([]int, amount+1)
+	for i := 0; i <= amount; i++ {
+		dp[i] = amount + 1
+	}
+	//base
+	dp[0] = 0
+	//外层
+	for i := 0; i <= amount; i++ {
+		//内层
+		for _, c := range coins {
+			if c > i {
+				continue
+			}
+			dp[i] = min(dp[i], dp[i-c]+1)
+		}
+	}
+	if dp[amount] == amount+1 {
+		return -1
+	} else {
+		return dp[amount]
+	}
+}

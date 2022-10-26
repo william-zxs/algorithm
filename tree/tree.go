@@ -181,3 +181,61 @@ func isBalancedHelper(root *TreeNode) (int, bool) {
 	}
 	return r + 1, true
 }
+
+//104. 二叉树的最大深度
+func maxDepth(root *TreeNode) int {
+	//通过遍历树的思想解决问题
+	var res int
+	var depth int
+	var traverse func(root *TreeNode)
+	traverse = func(root *TreeNode) {
+		if root == nil {
+			return
+		}
+		//前序位置
+		depth++
+		if root.Left == nil && root.Right == nil {
+			if depth > res {
+				res = depth
+			}
+		}
+		//递归左右子树
+		traverse(root.Left)
+		traverse(root.Right)
+		//后序位置
+		depth--
+	}
+	traverse(root)
+	return res
+}
+
+//543. 二叉树的直径
+func diameterOfBinaryTree(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+
+	var maxDiameter int
+
+	//遍历二叉树，利用返回值，在后序位置写逻辑
+	var maxDepth func(root *TreeNode) int
+	maxDepth = func(root *TreeNode) int {
+		if root == nil {
+			return 0
+		}
+		l := maxDepth(root.Left)
+		r := maxDepth(root.Right)
+		//后序位置
+		//计算直径
+		if l+r > maxDiameter {
+			maxDiameter = l + r
+		}
+		//返回最大深度
+		if l > r {
+			return l + 1
+		}
+		return r + 1
+	}
+	maxDepth(root)
+	return maxDiameter
+}
