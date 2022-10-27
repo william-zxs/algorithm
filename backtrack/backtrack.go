@@ -279,3 +279,37 @@ func combinationSum(candidates []int, target int) [][]int {
 	trackback(0, 0)
 	return result
 }
+
+//46. 全排列
+func permute_(nums []int) [][]int {
+
+	res := make([][]int, 0)
+	var backtrack func(track []int, used []bool)
+
+	backtrack = func(track []int, used []bool) {
+
+		if len(track) == len(nums) {
+			res = append(res, append(make([]int, 0), track...))
+			return
+		}
+
+		for i := 0; i < len(nums); i++ {
+			//做选择
+			if used[i] == true {
+				continue
+			}
+			track = append(track, nums[i])
+			used[i] = true
+			//  递归
+			backtrack(track, used)
+			//撤销选择
+			track = track[:len(track)-1]
+			used[i] = false
+
+		}
+	}
+	track := make([]int, 0)
+	used := make([]bool, len(nums))
+	backtrack(track, used)
+	return res
+}
