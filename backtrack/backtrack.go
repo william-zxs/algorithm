@@ -313,3 +313,40 @@ func permute_(nums []int) [][]int {
 	backtrack(track, used)
 	return res
 }
+
+//46. 全排列
+
+func permute_3(nums []int) [][]int {
+	//遍历决策树，暴力遍历，时间复杂度是O(n!)
+	//但是必须说明的是，不管怎么优化，都符合回溯框架，
+	//而且时间复杂度都不可能低于 O(N!)，
+	//因为穷举整棵决策树是无法避免的。
+	//这也是回溯算法的一个特点，
+	//不像动态规划存在重叠子问题可以优化，
+	//回溯算法就是纯暴力穷举，复杂度一般都很高。
+	track := make([]int, 0)
+	res := make([][]int, 0)
+	used := make([]bool, len(nums))
+	var backtrack func()
+	backtrack = func() {
+		if len(track) == len(nums) {
+			res = append(res, append(make([]int, 0), track...))
+			return
+		}
+		for i := 0; i < len(nums); i++ {
+			//做选择
+			if used[i] {
+				continue
+			}
+			used[i] = true
+			track = append(track, nums[i])
+			//递归
+			backtrack()
+			//撤销选择
+			used[i] = false
+			track = track[:len(track)-1]
+		}
+	}
+	backtrack()
+	return res
+}
