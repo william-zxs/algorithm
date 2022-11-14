@@ -350,3 +350,63 @@ func permute_3(nums []int) [][]int {
 	backtrack()
 	return res
 }
+
+//51. N 皇后
+func solveNQueens_(n int) [][]string {
+	track := make([]string, 0)
+	result := make([][]string, 0)
+	posSlice := make([]byte, n)
+	for i := 0; i < len(posSlice); i++ {
+		posSlice[i] = '.'
+	}
+	var backtrack func(int)
+	backtrack = func(i int) {
+		if i == n {
+			//结束条件
+			if len(track) == n {
+				result = append(result, append(make([]string, 0), track...))
+			}
+			return
+		}
+		for j := 0; j < n; j++ {
+			if !isOk(i, j, n, track) {
+				continue
+			}
+
+			//做选择
+			posSlice[j] = 'Q'
+			line := string(posSlice)
+			posSlice[j] = '.'
+			track = append(track, line)
+			//递归
+			backtrack(i + 1)
+			//撤销选择
+			track = track[:len(track)-1]
+		}
+	}
+	backtrack(0)
+	return result
+}
+
+func isOk(i, j, n int, track []string) bool {
+	//横 不用判断
+	//上
+	for l := i - 1; l >= 0; l-- {
+		if track[l][j] == 'Q' {
+			return false
+		}
+	}
+	//右上
+	for r, t := j+1, i-1; r < n && t >= 0; r, t = r+1, t-1 {
+		if track[t][r] == 'Q' {
+			return false
+		}
+	}
+	//左上
+	for l, t := j-1, i-1; l >= 0 && t >= 0; l, t = l-1, t-1 {
+		if track[t][l] == 'Q' {
+			return false
+		}
+	}
+	return true
+}
