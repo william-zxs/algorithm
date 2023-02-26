@@ -24,7 +24,7 @@ func MaxSum(cycle []int, N int) int {
 	return sum
 }
 
-//344. 反转字符串
+// 344. 反转字符串
 func reverseString(s []byte) []byte {
 	l := len(s)
 	for i := 0; i < l/2; i++ {
@@ -33,7 +33,7 @@ func reverseString(s []byte) []byte {
 	return s
 }
 
-//76. 最小覆盖子串
+// 76. 最小覆盖子串
 func minWindow(s string, t string) string {
 	sMap := make(map[byte]int, 0)
 	tMap := make(map[byte]int, 0)
@@ -93,7 +93,7 @@ func checkRes(sMap, tMap map[byte]int) bool {
 	return true
 }
 
-//567. 字符串的排列
+// 567. 字符串的排列
 func checkInclusion(s1 string, s2 string) bool {
 	if len(s2) < len(s1) {
 		return false
@@ -123,7 +123,7 @@ func checkInclusion(s1 string, s2 string) bool {
 
 }
 
-//438. 找到字符串中所有字母异位词
+// 438. 找到字符串中所有字母异位词
 func findAnagrams(s string, p string) []int {
 	if len(s) < len(p) {
 		return []int{}
@@ -150,7 +150,7 @@ func findAnagrams(s string, p string) []int {
 
 }
 
-//3. 无重复字符的最长子串
+// 3. 无重复字符的最长子串
 func lengthOfLongestSubstring(s string) int {
 	if len(s) == 0 {
 		return 0
@@ -184,7 +184,7 @@ func max(m, n int) int {
 	return n
 }
 
-//19. 删除链表的倒数第 N 个结点
+// 19. 删除链表的倒数第 N 个结点
 func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	dummy := &ListNode{}
 	dummy.Next = head
@@ -204,7 +204,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	return dummy.Next
 }
 
-//876. 链表的中间结点
+// 876. 链表的中间结点
 func middleNode(head *ListNode) *ListNode {
 
 	//快慢双指针
@@ -217,7 +217,7 @@ func middleNode(head *ListNode) *ListNode {
 	return j
 }
 
-//判断链表是否包含环
+// 判断链表是否包含环
 func HasRing(head *ListNode) bool {
 	//快慢双指针，相遇则有环，如果快指针遇到nil，则无环
 	s := head
@@ -232,7 +232,7 @@ func HasRing(head *ListNode) bool {
 	return false
 }
 
-//如果链表中含有环，如何计算这个环的起点？
+// 如果链表中含有环，如何计算这个环的起点？
 func DetectCycle(head *ListNode) *ListNode {
 	//快慢指针，如果快指针遇到nil，则没有环；如果快慢指针相遇，则有环;
 	//此时慢指针回到head，快指针和慢指针同速度，相遇点即为环起点
@@ -259,7 +259,7 @@ func DetectCycle(head *ListNode) *ListNode {
 	return s
 }
 
-//160. 相交链表
+// 160. 相交链表
 func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	a := headA
 	b := headB
@@ -278,7 +278,7 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	return a
 }
 
-//167. 两数之和 II - 输入有序数组
+// 167. 两数之和 II - 输入有序数组
 func twoSum(numbers []int, target int) []int {
 	l, r := 0, len(numbers)-1
 	for l < r {
@@ -294,7 +294,7 @@ func twoSum(numbers []int, target int) []int {
 	return []int{-1, -1}
 }
 
-//344. 反转字符串
+// 344. 反转字符串
 func reverseString2(s []byte) {
 	l, r := 0, len(s)-1
 	for l < r {
@@ -304,7 +304,7 @@ func reverseString2(s []byte) {
 	}
 }
 
-//5. 最长回文子串
+// 5. 最长回文子串
 func longestPalindrome(s string) string {
 	if len(s) == 0 || len(s) == 1 {
 		return s
@@ -336,4 +336,30 @@ func helper(s string, l, r int) string {
 		return ""
 	}
 	return s[l:r]
+}
+
+// 11. 盛最多水的容器
+// 中等
+func maxArea(height []int) int {
+	l, r := 0, len(height)-1
+	var max int
+	for l < r {
+		area := min(height[l], height[r]) * (r - l)
+		if area > max {
+			max = area
+		}
+		if height[l] < height[r] {
+			l++
+		} else {
+			r--
+		}
+	}
+	return max
+}
+
+func min(m, n int) int {
+	if m > n {
+		return n
+	}
+	return m
 }

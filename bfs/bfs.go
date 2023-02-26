@@ -1,5 +1,8 @@
 package main
 
+//BFS 出现的常见场景好吧，问题的本质就是让你在一幅「图」中找到从起点 start 到终点 target 的最近距离，
+//这个例子听起来很枯燥，但是 BFS 算法问题其实都是在干这个事儿
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
