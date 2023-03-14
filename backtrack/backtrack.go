@@ -7,7 +7,7 @@ import (
 
 //回溯法
 
-//46. 全排列
+// 46. 全排列
 func permute(nums []int) [][]int {
 	result := make([][]int, 0)
 	track := make([]int, 0)
@@ -76,7 +76,7 @@ func solveNQueens(n int) [][]string {
 	return result
 }
 
-//51. N 皇后
+// 51. N 皇后
 func IsValid(board [][]string, m, i int) bool {
 	//校验左上角
 	for m, i := m-1, i-1; m >= 0 && i >= 0; m, i = m-1, i-1 {
@@ -101,7 +101,7 @@ func IsValid(board [][]string, m, i int) bool {
 	return true
 }
 
-//78. 子集
+// 78. 子集
 func subsets(nums []int) [][]int {
 
 	result := make([][]int, 0)
@@ -123,7 +123,7 @@ func subsets(nums []int) [][]int {
 	return result
 }
 
-//77. 组合
+// 77. 组合
 func combine(n int, k int) [][]int {
 	//子集问题的减枝
 	if n == 1 && k == 1 {
@@ -153,7 +153,7 @@ func combine(n int, k int) [][]int {
 	return result
 }
 
-//90. 子集 II
+// 90. 子集 II
 func subsetsWithDup(nums []int) [][]int {
 	track := make([]int, 0)
 	// used := make([]bool,len(nums))
@@ -176,7 +176,7 @@ func subsetsWithDup(nums []int) [][]int {
 	return result
 }
 
-//40. 组合总和 II
+// 40. 组合总和 II
 func combinationSum2(candidates []int, target int) [][]int {
 	result := make([][]int, 0)
 	track := make([]int, 0)
@@ -210,7 +210,7 @@ func combinationSum2(candidates []int, target int) [][]int {
 	return result
 }
 
-//47. 全排列 II
+// 47. 全排列 II
 func permuteUnique(nums []int) [][]int {
 	//排序
 	//剪枝
@@ -253,7 +253,7 @@ func permuteUnique(nums []int) [][]int {
 	return result
 }
 
-//39. 组合总和
+// 39. 组合总和
 func combinationSum(candidates []int, target int) [][]int {
 	track := make([]int, 0)
 	result := make([][]int, 0)
@@ -280,7 +280,7 @@ func combinationSum(candidates []int, target int) [][]int {
 	return result
 }
 
-//46. 全排列
+// 46. 全排列
 func permute_(nums []int) [][]int {
 
 	res := make([][]int, 0)
@@ -351,7 +351,7 @@ func permute_3(nums []int) [][]int {
 	return res
 }
 
-//51. N 皇后
+// 51. N 皇后
 func solveNQueens_(n int) [][]string {
 	track := make([]string, 0)
 	result := make([][]string, 0)
@@ -409,4 +409,45 @@ func isOk(i, j, n int, track []string) bool {
 		}
 	}
 	return true
+}
+
+// 22. 括号生成
+// 中等
+func generateParenthesis(n int) []string {
+	//回溯法
+	res := make([]string, 0)
+
+	var backtrack func(left int, right int, track []byte)
+
+	backtrack = func(left int, right int, track []byte) {
+		//剪枝
+		if left < 0 {
+			return
+		}
+		if right < 0 {
+			return
+		}
+		if left > right {
+			return
+		}
+
+		if len(track) == 2*n {
+			res = append(res, string(track))
+			return
+		}
+
+		//两种选择，left 或者right
+		//尝试做括号
+		track = append(track, '(')
+		backtrack(left-1, right, track)
+		//撤回
+		track = track[:len(track)-1]
+
+		//右括号
+		track = append(track, ')')
+		backtrack(left, right-1, track)
+		track = track[:len(track)-1]
+	}
+	backtrack(n, n, []byte{})
+	return res
 }
