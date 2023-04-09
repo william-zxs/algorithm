@@ -363,3 +363,33 @@ func min(m, n int) int {
 	}
 	return m
 }
+
+// 264. 丑数 II
+func nthUglyNumber(n int) int {
+	//合并三个slice
+	n1, n2, n3 := 2, 3, 5
+	p1, p2, p3 := 0, 0, 0
+	res := []int{1}
+	for len(res) < n {
+		v1 := res[p1] * n1
+		v2 := res[p2] * n2
+		v3 := res[p3] * n3
+		v := min(min(v1, v2), v3)
+		if v > res[len(res)-1] {
+			res = append(res, v)
+		}
+		switch v {
+		case v1:
+			p1 += 1
+
+		case v2:
+			p2 += 1
+
+		case v3:
+			p3 += 1
+
+		}
+
+	}
+	return res[len(res)-1]
+}
